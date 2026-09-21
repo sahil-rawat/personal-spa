@@ -28,7 +28,7 @@ As you enter a URL in the browser to open a website, An HTTP Request is made by 
 
 The HTTP request which the browser sent will look something like this ⬇️:
 
-```HTTP
+```http
 GET /  HTTP/1.1 /
 Host: https://sahilsinghrawat.com
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/50.0
