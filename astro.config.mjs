@@ -7,7 +7,9 @@ import { remarkReadingTime } from './src/plugins/remark-reading-time.mjs';
 export default defineConfig({
   site: 'https://www.sahilsinghrawat.com',
   trailingSlash: 'always',
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    imageService: 'passthrough',
+  }),
   vite: {
     plugins: [tailwindcss()],
   },
