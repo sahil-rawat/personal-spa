@@ -67,7 +67,7 @@ const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
           Sahil Singh Rawat
         </h1>
         <p class="text-lg text-[var(--text-body)] leading-relaxed font-normal">
-          Software Architect & Backend Engineer. Designing resilient distributed infrastructure, optimizing JVM concurrency runtimes, and conducting offensive vulnerability research.
+          Architecting resilient distributed systems. Obsessed with low-level execution, backend performance, and offensive security analysis.
         </p>
       </div>
 
@@ -78,41 +78,44 @@ const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
       </div>
     </section>
 
-    <!-- Architecture & Core Focus -->
+    <!-- Architecture, Security & Research Disciplines -->
     <section id="architecture" class="space-y-4">
       <div class="flex items-center justify-between border-b border-[var(--border)] pb-3">
         <h2 class="text-xs font-mono uppercase tracking-widest text-[var(--text-muted)] font-bold">
-          System Engineering & Research Disciplines
+          Architecture, Security & Applied Research
         </h2>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- 01: Architecture -->
         <div class="panel p-5 rounded-lg">
-          <div class="text-sky-400 text-xs font-mono font-bold mb-2">01 / SOFTWARE ARCHITECTURE</div>
-          <h3 class="text-base font-semibold text-[var(--text-high)] mb-2">Distributed Backends</h3>
+          <div class="text-sky-400 text-xs font-mono font-bold mb-2">01 / ARCHITECTURE</div>
+          <h3 class="text-base font-semibold text-[var(--text-high)] mb-2">Distributed Systems & Backends</h3>
           <p class="text-xs text-[var(--text-body)] leading-relaxed">
-            High-scale topologies, zero-trust service meshes, message-driven event buses, fault-tolerant partition handling, and microservice graph scalability.
+            High-scale service meshes, event-driven pipelines, resilient fault tolerance, and multi-region data consistency.
           </p>
         </div>
 
+        <!-- 02: Security -->
         <div class="panel p-5 rounded-lg">
-          <div class="text-sky-400 text-xs font-mono font-bold mb-2">02 / CORE RUNTIMES</div>
-          <h3 class="text-base font-semibold text-[var(--text-high)] mb-2">JVM Concurrency & Systems</h3>
+          <div class="text-sky-400 text-xs font-mono font-bold mb-2">02 / SECURITY</div>
+          <h3 class="text-base font-semibold text-[var(--text-high)] mb-2">Offensive Security & AppSec</h3>
           <p class="text-xs text-[var(--text-body)] leading-relaxed">
-            Project Loom lightweight virtual continuations, non-blocking socket multiplexing, memory layouts, cache-locality, and low-level C internals.
+            Adversarial attack surface analysis, authorization bypass chains (IDOR/BAC), SSRF cloud pivots, and secure runtime boundaries.
           </p>
         </div>
 
+        <!-- 03: Research -->
         <div class="panel p-5 rounded-lg">
-          <div class="text-sky-400 text-xs font-mono font-bold mb-2">03 / APPLICATION SECURITY</div>
-          <h3 class="text-base font-semibold text-[var(--text-high)] mb-2">OffSec & Threat Research</h3>
+          <div class="text-sky-400 text-xs font-mono font-bold mb-2">03 / RESEARCH</div>
+          <h3 class="text-base font-semibold text-[var(--text-high)] mb-2">Emerging Tech & Internals</h3>
           <p class="text-xs text-[var(--text-body)] leading-relaxed">
-            Offensive exploitation mechanics: SSRF metadata pivoting, IDOR authorization chains, memory corruption vectors, and reverse engineering.
+            Investigating novel runtime mechanics, AI/LLM security paradigms, protocol vulnerabilities, and next-gen developer tooling.
           </p>
         </div>
       </div>
     </section>
-
+    
     <!-- Articles Feed with Interactive Search & Filters -->
     <section id="articles" class="space-y-6">
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[var(--border)] pb-4">
