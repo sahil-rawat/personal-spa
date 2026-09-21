@@ -8,6 +8,7 @@ export default defineConfig({
   site: 'https://www.sahilsinghrawat.com',
   trailingSlash: 'always',
   adapter: cloudflare({
+    mode: 'pages', // Enforces Cloudflare Pages directory structure (_worker.js at dist root)
     imageService: 'passthrough',
   }),
   vite: {
