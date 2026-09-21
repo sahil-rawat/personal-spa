@@ -1,0 +1,160 @@
+---
+import '../styles/global.css';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('posts');
+const sortedPosts = allPosts
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .map(p => ({
+    title: p.data.title,
+    date: p.data.date.toISOString().split('T')[0],
+    slug: p.id.replace(/^\d{4}-\d{2}-\d{2}-/, '').replace(/\.md$/, ''),
+    summary: p.data.description || p.body?.slice(0, 150).replace(/[#*`]/g, '') + '...',
+    tags: p.data.tags || [],
+    category: p.data.categories?.[0] || 'Software & Systems'
+  }));
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sahil Singh Rawat — Software Architect & Security Researcher</title>
+</head>
+<body class="min-h-screen">
+  <!-- Top glow -->
+  <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[260px] bg-sky-500/10 blur-[120px] pointer-events-none -z-10"></div>
+
+  <!-- Header -->
+  <header class="border-b border-[var(--border)] bg-[var(--bg-canvas)]/80 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2 font-mono text-sm font-semibold tracking-tight text-white group">
+        <span class="w-2.5 h-2.5 rounded-sm bg-sky-400 group-hover:rotate-45 transition-transform"></span>
+        sahilsinghrawat.com
+      </a>
+      <nav class="flex items-center gap-6 text-xs font-mono text-[var(--text-muted)]">
+        <a href="#about" class="hover:text-white transition-colors">/about</a>
+        <a href="#architecture" class="hover:text-white transition-colors">/architecture</a>
+        <a href="#articles" class="text-sky-400 hover:text-sky-300 transition-colors font-medium">/articles</a>
+        <a href="https://github.com/sahil-rawat" target="_blank" rel="noreferrer" class="hover:text-white transition-colors">/github</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-6 py-16 space-y-20">
+    <!-- Hero Section -->
+    <section id="about" class="space-y-6">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono bg-sky-500/10 text-sky-400 border border-sky-500/20">
+        <span class="w-1.5 h-1.5 rounded-full bg-sky-400 animate-ping"></span>
+        Production Systems · Low-Level Runtimes · Application Security
+      </div>
+
+      <div class="space-y-3 max-w-3xl">
+        <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+          Sahil Singh Rawat
+        </h1>
+        <p class="text-lg text-[var(--text-body)] leading-relaxed font-normal">
+          Software Architect & Backend Engineer. Designing resilient distributed infrastructure, optimizing JVM concurrency runtimes, and conducting offensive vulnerability research.
+        </p>
+      </div>
+
+      <!-- Quick Command Tool -->
+      <div class="flex items-center gap-3 pt-2">
+        <div class="inline-flex items-center bg-[#0d1017] border border-[var(--border)] rounded-md px-3 py-2 font-mono text-xs text-slate-300">
+          <span class="text-sky-400 mr-2">$</span>
+          <span>npx sahilsinghrawat</span>
+        </div>
+        <a href="#articles" class="px-4 py-2 rounded-md bg-white text-black font-semibold text-xs hover:bg-slate-200 transition-colors">
+          View All {sortedPosts.length} Articles →
+        </a>
+      </div>
+    </section>
+
+    <!-- Architecture & Core Focus -->
+    <section id="architecture" class="space-y-4">
+      <div class="flex items-center justify-between border-b border-[var(--border)] pb-3">
+        <h2 class="text-xs font-mono uppercase tracking-widest text-[var(--text-muted)] font-bold">
+          System Engineering & Research Disciplines
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="panel p-5 rounded-lg">
+          <div class="text-sky-400 text-xs font-mono font-bold mb-2">01 / SOFTWARE ARCHITECTURE</div>
+          <h3 class="text-base font-semibold text-white mb-2">Distributed Backends</h3>
+          <p class="text-xs text-[var(--text-body)] leading-relaxed">
+            High-scale topologies, zero-trust service meshes, message-driven event buses, fault-tolerant partition handling, and microservice graph scalability.
+          </p>
+        </div>
+
+        <div class="panel p-5 rounded-lg">
+          <div class="text-sky-400 text-xs font-mono font-bold mb-2">02 / CORE RUNTIMES</div>
+          <h3 class="text-base font-semibold text-white mb-2">JVM Concurrency & Systems</h3>
+          <p class="text-xs text-[var(--text-body)] leading-relaxed">
+            Project Loom lightweight virtual continuations, non-blocking socket multiplexing, memory layouts, cache-locality, and low-level C internals.
+          </p>
+        </div>
+
+        <div class="panel p-5 rounded-lg">
+          <div class="text-sky-400 text-xs font-mono font-bold mb-2">03 / APPLICATION SECURITY</div>
+          <h3 class="text-base font-semibold text-white mb-2">OffSec & Threat Research</h3>
+          <p class="text-xs text-[var(--text-body)] leading-relaxed">
+            Offensive exploitation mechanics: SSRF metadata pivoting, IDOR authorization chains, memory corruption vectors, and reverse engineering.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Articles Feed -->
+    <section id="articles" class="space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--border)] pb-3">
+        <div>
+          <h2 class="text-lg font-bold text-white tracking-tight">Technical Articles</h2>
+          <p class="text-xs text-[var(--text-muted)] mt-0.5">Deep-dives, architecture blueprints, and exploit walkthroughs.</p>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        {sortedPosts.map((post) => (
+          <article class="panel p-5 rounded-lg group">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between text-xs font-mono text-[var(--text-muted)] mb-2 gap-1">
+              <span class="text-sky-400 font-medium">{post.category}</span>
+              <span>{post.date}</span>
+            </div>
+
+            <h3 class="text-base font-bold text-white group-hover:text-sky-400 transition-colors mb-2">
+              <a href={`/posts/${post.slug}/`}>
+                {post.title}
+              </a>
+            </h3>
+
+            <p class="text-xs text-[var(--text-body)] leading-relaxed mb-3">
+              {post.summary}
+            </p>
+
+            <div class="flex flex-wrap gap-1.5 pt-2 border-t border-[var(--border)]">
+              {post.tags.map((tag: string) => (
+                <span class="text-[11px] font-mono text-[var(--text-muted)] bg-[var(--bg-canvas)] border border-[var(--border)] px-2 py-0.5 rounded">
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-[var(--border)] py-12 text-xs font-mono text-[var(--text-muted)] mt-24">
+    <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p>© {new Date().getFullYear()} Sahil Singh Rawat. All rights reserved.</p>
+      <div class="flex items-center gap-6">
+        <a href="https://github.com/sahil-rawat" target="_blank" rel="noreferrer" class="hover:text-white transition-colors">GitHub</a>
+        <a href="https://twitter.com/sahil_s_rawat" target="_blank" rel="noreferrer" class="hover:text-white transition-colors">Twitter</a>
+        <a href="mailto:sahilsinghrawat@example.com" class="hover:text-white transition-colors">Contact</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,119 @@
+---
+import '../../styles/global.css';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('posts');
+  return allPosts.map((post) => {
+    const cleanSlug = post.id
+      .replace(/^\d{4}-\d{2}-\d{2}-/, '')
+      .replace(/\.md$/, '');
+
+    return {
+      params: { slug: cleanSlug },
+      props: { post },
+    };
+  });
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{post.data.title} — Sahil Singh Rawat</title>
+</head>
+<body class="min-h-screen bg-[var(--bg-canvas)] text-[var(--text-high)] antialiased">
+  <!-- Minimal Nav -->
+  <header class="border-b border-[var(--border)] bg-[var(--bg-canvas)]/80 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between text-xs font-mono">
+      <a href="/#articles" class="text-[var(--text-muted)] hover:text-white flex items-center gap-1.5 transition-colors">
+        ← /articles
+      </a>
+      <span class="text-[var(--text-muted)]">
+        {post.data.date.toISOString().split('T')[0]}
+      </span>
+    </div>
+  </header>
+
+  <!-- Article Viewport with Generous Spacing -->
+  <main class="max-w-3xl mx-auto px-6 py-16 sm:py-20">
+    <header class="mb-14 pb-10 border-b border-[var(--border)] space-y-5">
+      <div class="text-xs font-mono text-sky-400 font-semibold uppercase tracking-wider">
+        {post.data.categories?.[0] || 'Engineering & Security'}
+      </div>
+      <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-[1.2]">
+        {post.data.title}
+      </h1>
+      <div class="flex flex-wrap gap-2 pt-2">
+        {post.data.tags.map((tag: string) => (
+          <span class="text-xs font-mono text-[var(--text-muted)] bg-[var(--bg-surface)] border border-[var(--border)] px-2.5 py-1 rounded">
+            #{tag}
+          </span>
+        ))}
+      </div>
+    </header>
+
+    <!-- Content with breathing room -->
+    <article class="article-content max-w-none text-[17px] sm:text-[18px] text-[var(--text-body)] leading-[1.85]">
+      <Content />
+    </article>
+    <!-- Modern Author & Social Card -->
+    <section class="mt-16 pt-10 border-t border-[var(--border)]">
+      <div class="panel p-6 sm:p-8 rounded-xl space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-base font-bold text-white">Thanks for reading!</h3>
+            <p class="text-xs text-[var(--text-muted)] mt-0.5">
+              Follow along for more deep-dives into systems engineering, architecture, and security research.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-2.5 pt-2">
+          <a
+            href="https://twitter.com/sahil_s_rawat"
+            target="_blank"
+            rel="noreferrer"
+            class="px-3 py-1.5 rounded-md border border-[var(--border)] bg-[var(--bg-canvas)] hover:border-sky-400 hover:text-sky-400 text-xs font-mono text-[var(--text-body)] transition-all flex items-center gap-1.5"
+          >
+            Twitter / X ↗
+          </a>
+          <a
+            href="https://www.linkedin.com/in/sahil-singh-rawat"
+            target="_blank"
+            rel="noreferrer"
+            class="px-3 py-1.5 rounded-md border border-[var(--border)] bg-[var(--bg-canvas)] hover:border-sky-400 hover:text-sky-400 text-xs font-mono text-[var(--text-body)] transition-all flex items-center gap-1.5"
+          >
+            LinkedIn ↗
+          </a>
+          <a
+            href="https://github.com/sahil-rawat"
+            target="_blank"
+            rel="noreferrer"
+            class="px-3 py-1.5 rounded-md border border-[var(--border)] bg-[var(--bg-canvas)] hover:border-sky-400 hover:text-sky-400 text-xs font-mono text-[var(--text-body)] transition-all flex items-center gap-1.5"
+          >
+            GitHub ↗
+          </a>
+          <a
+            href="/"
+            class="px-3 py-1.5 rounded-md border border-[var(--border)] bg-[var(--bg-canvas)] hover:border-sky-400 hover:text-sky-400 text-xs font-mono text-[var(--text-body)] transition-all flex items-center gap-1.5"
+          >
+            Overview / Home ↗
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer of Post -->
+    <div class="mt-20 pt-10 border-t border-[var(--border)] flex items-center justify-between text-xs font-mono text-[var(--text-muted)]">
+      <a href="/#articles" class="text-sky-400 hover:underline">← Back to Articles</a>
+      <span>Written by Sahil Singh Rawat</span>
+    </div>
+  </main>
+</body>
+</html>

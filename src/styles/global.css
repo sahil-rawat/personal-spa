@@ -1,0 +1,130 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-canvas: #090a0f;
+    --bg-surface: #11131a;
+    --bg-surface-hover: #171b26;
+    --bg-code: #0b0e14;
+    --border: #1f2433;
+    --border-hover: #2f364d;
+    --text-high: #f1f5f9;
+    --text-body: #a0aec0;
+    --text-muted: #64748b;
+    --accent: #38bdf8;
+  }
+}
+
+body {
+  background-color: var(--bg-canvas);
+  color: var(--text-high);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.panel {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.panel:hover {
+  background-color: var(--bg-surface-hover);
+  border-color: var(--border-hover);
+  transform: translateY(-1px);
+}
+
+/* Roomy Editorial Typography for Articles */
+.article-content > * + * {
+  margin-top: 1.75rem;
+}
+
+.article-content p {
+  margin-bottom: 1.75rem;
+}
+
+.article-content h1,
+.article-content h2,
+.article-content h3,
+.article-content h4 {
+  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: 3rem;
+  margin-bottom: 1.25rem;
+  line-height: 1.3;
+}
+
+.article-content h2 {
+  font-size: 1.65rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+}
+
+.article-content h3 {
+  font-size: 1.35rem;
+}
+
+.article-content ul,
+.article-content ol {
+  margin-top: 1.25rem;
+  margin-bottom: 1.75rem;
+  padding-left: 1.75rem;
+}
+
+.article-content ul {
+  list-style-type: disc;
+}
+
+.article-content ol {
+  list-style-type: decimal;
+}
+
+.article-content li {
+  margin-top: 0.65rem;
+  margin-bottom: 0.65rem;
+}
+
+.article-content a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.article-content blockquote {
+  border-left: 3px solid var(--accent);
+  padding-left: 1.25rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+.article-content code {
+  color: #38bdf8;
+  background: #141824;
+  border: 1px solid #23293d;
+  padding: 0.2rem 0.45rem;
+  border-radius: 0.35rem;
+  font-size: 0.88em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.article-content pre {
+  background-color: var(--bg-code) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 0.65rem;
+  padding: 1.35rem 1.5rem !important;
+  margin-top: 2.25rem !important;
+  margin-bottom: 2.25rem !important;
+  overflow-x: auto;
+  line-height: 1.65 !important;
+  font-size: 0.9em !important;
+}
+
+.article-content pre code {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  color: inherit !important;
+}
