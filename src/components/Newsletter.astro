@@ -1,0 +1,121 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Deep-Dive Dispatch",
+  description = "No spam, newsletters, or fluff. Periodic technical memos on distributed systems architecture, concurrency internals, and offensive vulnerability research."
+} = Astro.props;
+
+// Cloudflare Turnstile Public Site Key
+const TURNSTILE_SITE_KEY = "0x4AAAAAAAxYOUR_TURNSTILE_SITEKEY";
+---
+
+<section class="panel p-6 sm:p-8 rounded-xl border border-[var(--border)] relative overflow-hidden my-12">
+  <div class="absolute -top-12 -right-12 w-48 h-48 bg-sky-500/10 blur-3xl pointer-events-none -z-10"></div>
+
+  <div class="max-w-xl space-y-3">
+    <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded text-[11px] font-mono text-sky-400 bg-sky-500/10 border border-sky-500/20">
+      <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
+      MEMOS & ADVISORIES
+    </div>
+    <h3 class="text-xl font-bold text-[var(--text-high)] tracking-tight">{title}</h3>
+    <p class="text-xs text-[var(--text-body)] leading-relaxed">{description}</p>
+  </div>
+
+  <form id="newsletter-form" class="mt-6 space-y-3">
+    <div class="flex flex-col sm:flex-row items-stretch gap-2.5">
+      <div class="relative flex-1">
+        <span class="absolute inset-y-0 left-3 flex items-center text-xs font-mono text-[var(--text-muted)] select-none">
+          $
+        </span>
+        <input
+          type="email"
+          id="newsletter-email"
+          name="email"
+          required
+          placeholder="engineer@domain.com"
+          class="w-full pl-7 pr-3 py-2.5 text-xs font-mono rounded-md bg-[var(--bg-canvas)] border border-[var(--border)] text-[var(--text-high)] placeholder-[var(--text-muted)] focus:outline-none focus:border-sky-400 transition-colors"
+        />
+      </div>
+
+      <!-- Cloudflare Turnstile Widget (Managed/Non-interactive) -->
+      <div
+        class="cf-turnstile"
+        data-sitekey={TURNSTILE_SITE_KEY}
+        data-theme="dark"
+        data-size="flexible"
+      ></div>
+
+      <button
+        type="submit"
+        id="newsletter-submit-btn"
+        class="px-5 py-2.5 rounded-md text-xs font-mono font-semibold bg-[var(--text-high)] text-[var(--bg-canvas)] hover:opacity-90 transition-opacity flex items-center justify-center gap-2 whitespace-nowrap"
+      >
+        <span>Subscribe</span>
+        <span id="btn-arrow">→</span>
+      </button>
+    </div>
+
+    <!-- Status Message Feedback -->
+    <p id="newsletter-status" class="text-xs font-mono hidden"></p>
+  </form>
+</section>
+
+<!-- Include Cloudflare Turnstile API Script -->
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+<script is:inline>
+  const form = document.getElementById('newsletter-form');
+  const emailInput = document.getElementById('newsletter-email');
+  const submitBtn = document.getElementById('newsletter-submit-btn');
+  const statusMsg = document.getElementById('newsletter-status');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    statusMsg.classList.add('hidden');
+    statusMsg.textContent = '';
+    submitBtn.disabled = true;
+    submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
+
+    const turnstileToken = form.querySelector('[name="cf-turnstile-response"]')?.value;
+
+    if (!turnstileToken) {
+      statusMsg.className = 'text-xs font-mono text-amber-400 block';
+      statusMsg.textContent = 'Please complete the bot check.';
+      submitBtn.disabled = false;
+      submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/subscribe/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: emailInput.value.trim(),
+          turnstileToken,
+        }),
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+        statusMsg.className = 'text-xs font-mono text-emerald-400 block';
+        statusMsg.textContent = '✓ Subscribed. You will receive technical memos as they release.';
+        emailInput.value = '';
+        if (window.turnstile) window.turnstile.reset();
+      } else {
+        throw new Error(result.error || 'Failed to subscribe.');
+      }
+    } catch (err) {
+      statusMsg.className = 'text-xs font-mono text-rose-400 block';
+      statusMsg.textContent = `✗ ${err.message}`;
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+    }
+  });
+</script>

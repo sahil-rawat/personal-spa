@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import cloudflare from '@astrojs/cloudflare';
 import tailwindcss from '@tailwindcss/vite';
 import { stripPostFooter } from './src/plugins/strip-footer.mjs';
 import { remarkReadingTime } from './src/plugins/remark-reading-time.mjs';
@@ -6,6 +7,7 @@ import { remarkReadingTime } from './src/plugins/remark-reading-time.mjs';
 export default defineConfig({
   site: 'https://www.sahilsinghrawat.com',
   trailingSlash: 'always',
+  adapter: cloudflare(),
   vite: {
     plugins: [tailwindcss()],
   },

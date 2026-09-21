@@ -1,6 +1,7 @@
 ---
 import '../../styles/global.css';
 import ThemeToggle from '../../components/ThemeToggle.astro';
+import Newsletter from '../../components/Newsletter.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -132,6 +133,8 @@ const readingTime = remarkPluginFrontmatter?.readingTime || '4 min read';
           </div>
         </div>
       </section>
+
+      <Newsletter />
 
       <div class="mt-12 pt-8 border-t border-[var(--border)] flex items-center justify-between text-xs font-mono text-[var(--text-muted)]">
         <a href="/#articles" class="text-sky-400 hover:underline">← Back to Articles</a>
