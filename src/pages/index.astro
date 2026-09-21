@@ -1,18 +1,21 @@
 ---
 import '../styles/global.css';
+import ThemeToggle from '../components/ThemeToggle.astro';
 import { getCollection } from 'astro:content';
 
 const allPosts = await getCollection('posts');
 const sortedPosts = allPosts
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-  .map(p => ({
+  .map((p) => ({
     title: p.data.title,
     date: p.data.date.toISOString().split('T')[0],
     slug: p.id.replace(/^\d{4}-\d{2}-\d{2}-/, '').replace(/\.md$/, ''),
     summary: p.data.description || p.body?.slice(0, 150).replace(/[#*`]/g, '') + '...',
     tags: p.data.tags || [],
-    category: p.data.categories?.[0] || 'Software & Systems'
+    category: p.data.categories?.[0] || 'Software & Systems',
   }));
+
+const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
 ---
 
 <!DOCTYPE html>
@@ -21,23 +24,32 @@ const sortedPosts = allPosts
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sahil Singh Rawat — Software Architect & Security Researcher</title>
+  <script is:inline>
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light' || (!savedTheme && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.add('light');
+    } else {
+      document.documentElement.classList.remove('light');
+    }
+  </script>
 </head>
 <body class="min-h-screen">
-  <!-- Top glow -->
+  <!-- Subtle top glow -->
   <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[260px] bg-sky-500/10 blur-[120px] pointer-events-none -z-10"></div>
 
   <!-- Header -->
   <header class="border-b border-[var(--border)] bg-[var(--bg-canvas)]/80 backdrop-blur-md sticky top-0 z-50">
     <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-      <a href="/" class="flex items-center gap-2 font-mono text-sm font-semibold tracking-tight text-white group">
+      <a href="/" class="flex items-center gap-2 font-mono text-sm font-semibold tracking-tight text-[var(--text-high)] group">
         <span class="w-2.5 h-2.5 rounded-sm bg-sky-400 group-hover:rotate-45 transition-transform"></span>
         sahilsinghrawat.com
       </a>
       <nav class="flex items-center gap-6 text-xs font-mono text-[var(--text-muted)]">
-        <a href="#about" class="hover:text-white transition-colors">/about</a>
-        <a href="#architecture" class="hover:text-white transition-colors">/architecture</a>
+        <a href="#about" class="hover:text-[var(--text-high)] transition-colors">/about</a>
+        <a href="#architecture" class="hover:text-[var(--text-high)] transition-colors">/architecture</a>
         <a href="#articles" class="text-sky-400 hover:text-sky-300 transition-colors font-medium">/articles</a>
-        <a href="https://github.com/sahil-rawat" target="_blank" rel="noreferrer" class="hover:text-white transition-colors">/github</a>
+        <a href="https://github.com/sahil-rawat" target="_blank" rel="noreferrer" class="hover:text-[var(--text-high)] transition-colors">/github</a>
+        <ThemeToggle />
       </nav>
     </div>
   </header>
@@ -51,7 +63,7 @@ const sortedPosts = allPosts
       </div>
 
       <div class="space-y-3 max-w-3xl">
-        <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+        <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-[var(--text-high)] leading-tight">
           Sahil Singh Rawat
         </h1>
         <p class="text-lg text-[var(--text-body)] leading-relaxed font-normal">
@@ -59,13 +71,8 @@ const sortedPosts = allPosts
         </p>
       </div>
 
-      <!-- Quick Command Tool -->
-      <div class="flex items-center gap-3 pt-2">
-        <div class="inline-flex items-center bg-[#0d1017] border border-[var(--border)] rounded-md px-3 py-2 font-mono text-xs text-slate-300">
-          <span class="text-sky-400 mr-2">$</span>
-          <span>npx sahilsinghrawat</span>
-        </div>
-        <a href="#articles" class="px-4 py-2 rounded-md bg-white text-black font-semibold text-xs hover:bg-slate-200 transition-colors">
+      <div class="pt-2">
+        <a href="#articles" class="inline-flex items-center px-4 py-2 rounded-md bg-[var(--text-high)] text-[var(--bg-canvas)] font-semibold text-xs hover:opacity-90 transition-opacity">
           View All {sortedPosts.length} Articles →
         </a>
       </div>
@@ -82,7 +89,7 @@ const sortedPosts = allPosts
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="panel p-5 rounded-lg">
           <div class="text-sky-400 text-xs font-mono font-bold mb-2">01 / SOFTWARE ARCHITECTURE</div>
-          <h3 class="text-base font-semibold text-white mb-2">Distributed Backends</h3>
+          <h3 class="text-base font-semibold text-[var(--text-high)] mb-2">Distributed Backends</h3>
           <p class="text-xs text-[var(--text-body)] leading-relaxed">
             High-scale topologies, zero-trust service meshes, message-driven event buses, fault-tolerant partition handling, and microservice graph scalability.
           </p>
@@ -90,7 +97,7 @@ const sortedPosts = allPosts
 
         <div class="panel p-5 rounded-lg">
           <div class="text-sky-400 text-xs font-mono font-bold mb-2">02 / CORE RUNTIMES</div>
-          <h3 class="text-base font-semibold text-white mb-2">JVM Concurrency & Systems</h3>
+          <h3 class="text-base font-semibold text-[var(--text-high)] mb-2">JVM Concurrency & Systems</h3>
           <p class="text-xs text-[var(--text-body)] leading-relaxed">
             Project Loom lightweight virtual continuations, non-blocking socket multiplexing, memory layouts, cache-locality, and low-level C internals.
           </p>
@@ -98,7 +105,7 @@ const sortedPosts = allPosts
 
         <div class="panel p-5 rounded-lg">
           <div class="text-sky-400 text-xs font-mono font-bold mb-2">03 / APPLICATION SECURITY</div>
-          <h3 class="text-base font-semibold text-white mb-2">OffSec & Threat Research</h3>
+          <h3 class="text-base font-semibold text-[var(--text-high)] mb-2">OffSec & Threat Research</h3>
           <p class="text-xs text-[var(--text-body)] leading-relaxed">
             Offensive exploitation mechanics: SSRF metadata pivoting, IDOR authorization chains, memory corruption vectors, and reverse engineering.
           </p>
@@ -106,24 +113,61 @@ const sortedPosts = allPosts
       </div>
     </section>
 
-    <!-- Articles Feed -->
+    <!-- Articles Feed with Interactive Search & Filters -->
     <section id="articles" class="space-y-6">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--border)] pb-3">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[var(--border)] pb-4">
         <div>
-          <h2 class="text-lg font-bold text-white tracking-tight">Technical Articles</h2>
+          <h2 class="text-lg font-bold text-[var(--text-high)] tracking-tight">Technical Articles</h2>
           <p class="text-xs text-[var(--text-muted)] mt-0.5">Deep-dives, architecture blueprints, and exploit walkthroughs.</p>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="relative w-full sm:w-72">
+          <input
+            id="search-input"
+            type="text"
+            placeholder="Filter by title, #tag, or CVE..."
+            class="w-full bg-[var(--bg-surface)] border border-[var(--border)] focus:border-sky-400 text-xs text-[var(--text-high)] placeholder-[var(--text-muted)] rounded-md px-3 py-2 outline-none transition-colors font-mono"
+          />
         </div>
       </div>
 
-      <div class="space-y-3">
+      <!-- Category Filter Pills -->
+      <div class="flex flex-wrap items-center gap-2" id="category-filters">
+        {categories.map((cat, idx) => (
+          <button
+            type="button"
+            data-category={cat}
+            class={`category-btn px-3 py-1 rounded-md text-xs font-mono border transition-all ${
+              idx === 0
+                ? 'bg-sky-500/10 border-sky-500/40 text-sky-400 font-semibold'
+                : 'bg-[var(--bg-surface)] border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text-high)] hover:border-[var(--border-hover)]'
+            }`}
+          >
+            {cat}
+          </button>
+        ))}
+        <span id="article-count" class="ml-auto text-xs font-mono text-[var(--text-muted)]">
+          Showing {sortedPosts.length} of {sortedPosts.length}
+        </span>
+      </div>
+
+      <!-- Articles Grid -->
+      <div id="articles-container" class="space-y-3">
         {sortedPosts.map((post) => (
-          <article class="panel p-5 rounded-lg group">
+          <article
+            class="article-item panel p-5 rounded-lg group"
+            data-title={post.title.toLowerCase()}
+            data-summary={post.summary.toLowerCase()}
+            data-category={post.category}
+            data-tags={post.tags.join(',').toLowerCase()}
+          >
             <div class="flex flex-col sm:flex-row sm:items-center justify-between text-xs font-mono text-[var(--text-muted)] mb-2 gap-1">
               <span class="text-sky-400 font-medium">{post.category}</span>
               <span>{post.date}</span>
             </div>
 
-            <h3 class="text-base font-bold text-white group-hover:text-sky-400 transition-colors mb-2">
+            <h3 class="text-base font-bold text-[var(--text-high)] group-hover:text-sky-400 transition-colors mb-2">
               <a href={`/posts/${post.slug}/`}>
                 {post.title}
               </a>
@@ -135,13 +179,25 @@ const sortedPosts = allPosts
 
             <div class="flex flex-wrap gap-1.5 pt-2 border-t border-[var(--border)]">
               {post.tags.map((tag: string) => (
-                <span class="text-[11px] font-mono text-[var(--text-muted)] bg-[var(--bg-canvas)] border border-[var(--border)] px-2 py-0.5 rounded">
+                <button
+                  type="button"
+                  data-tag={tag.toLowerCase()}
+                  class="tag-btn text-[11px] font-mono text-[var(--text-muted)] hover:text-sky-400 bg-[var(--bg-canvas)] border border-[var(--border)] px-2 py-0.5 rounded transition-colors"
+                >
                   #{tag}
-                </span>
+                </button>
               ))}
             </div>
           </article>
         ))}
+      </div>
+
+      <!-- Empty State -->
+      <div id="empty-state" class="hidden text-center py-16 border border-dashed border-[var(--border)] rounded-lg">
+        <p class="text-sm font-mono text-[var(--text-muted)]">No articles match your search criteria.</p>
+        <button id="reset-filter-btn" class="mt-3 text-xs font-mono text-sky-400 hover:underline">
+          Clear filters
+        </button>
       </div>
     </section>
   </main>
@@ -150,11 +206,82 @@ const sortedPosts = allPosts
     <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
       <p>© {new Date().getFullYear()} Sahil Singh Rawat. All rights reserved.</p>
       <div class="flex items-center gap-6">
-        <a href="https://github.com/sahil-rawat" target="_blank" rel="noreferrer" class="hover:text-white transition-colors">GitHub</a>
-        <a href="https://twitter.com/sahil_s_rawat" target="_blank" rel="noreferrer" class="hover:text-white transition-colors">Twitter</a>
-        <a href="mailto:sahilsinghrawat@example.com" class="hover:text-white transition-colors">Contact</a>
+        <a href="https://github.com/sahil-rawat" target="_blank" rel="noreferrer" class="hover:text-[var(--text-high)] transition-colors">GitHub</a>
+        <a href="https://twitter.com/sahil_s_rawat" target="_blank" rel="noreferrer" class="hover:text-[var(--text-high)] transition-colors">Twitter</a>
+        <a href="mailto:sahilsinghrawat@example.com" class="hover:text-[var(--text-high)] transition-colors">Contact</a>
       </div>
     </div>
   </footer>
+
+  <script is:inline>
+    const searchInput = document.getElementById('search-input');
+    const categoryButtons = document.querySelectorAll('.category-btn');
+    const tagButtons = document.querySelectorAll('.tag-btn');
+    const articles = document.querySelectorAll('.article-item');
+    const emptyState = document.getElementById('empty-state');
+    const countDisplay = document.getElementById('article-count');
+    const resetBtn = document.getElementById('reset-filter-btn');
+
+    let activeCategory = 'All';
+    let searchQuery = '';
+
+    function filterArticles() {
+      let visibleCount = 0;
+      const query = searchQuery.trim().toLowerCase();
+
+      articles.forEach((card) => {
+        const title = card.getAttribute('data-title') || '';
+        const summary = card.getAttribute('data-summary') || '';
+        const category = card.getAttribute('data-category') || '';
+        const tags = card.getAttribute('data-tags') || '';
+
+        const matchesCategory = activeCategory === 'All' || category === activeCategory;
+        const matchesSearch = !query || title.includes(query) || summary.includes(query) || tags.includes(query);
+
+        if (matchesCategory && matchesSearch) {
+          card.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      countDisplay.textContent = `Showing ${visibleCount} of ${articles.length}`;
+      emptyState.classList.toggle('hidden', visibleCount > 0);
+    }
+
+    searchInput.addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      filterArticles();
+    });
+
+    categoryButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        activeCategory = btn.getAttribute('data-category');
+        categoryButtons.forEach((b) => {
+          b.className = 'category-btn px-3 py-1 rounded-md text-xs font-mono border transition-all bg-[var(--bg-surface)] border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text-high)] hover:border-[var(--border-hover)]';
+        });
+        btn.className = 'category-btn px-3 py-1 rounded-md text-xs font-mono border transition-all bg-sky-500/10 border-sky-500/40 text-sky-400 font-semibold';
+        filterArticles();
+      });
+    });
+
+    tagButtons.forEach((tagBtn) => {
+      tagBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        searchInput.value = tagBtn.getAttribute('data-tag');
+        searchQuery = searchInput.value;
+        filterArticles();
+      });
+    });
+
+    resetBtn?.addEventListener('click', () => {
+      searchInput.value = '';
+      searchQuery = '';
+      const allCategoryBtn = document.querySelector('[data-category="All"]');
+      if (allCategoryBtn) allCategoryBtn.click();
+    });
+  </script>
 </body>
 </html>

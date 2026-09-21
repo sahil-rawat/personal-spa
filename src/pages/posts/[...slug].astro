@@ -1,5 +1,6 @@
 ---
 import '../../styles/global.css';
+import ThemeToggle from '../../components/ThemeToggle.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -26,27 +27,38 @@ const { Content } = await render(post);
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{post.data.title} — Sahil Singh Rawat</title>
+  <script is:inline>
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light' || (!savedTheme && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.add('light');
+    } else {
+      document.documentElement.classList.remove('light');
+    }
+  </script>
 </head>
 <body class="min-h-screen bg-[var(--bg-canvas)] text-[var(--text-high)] antialiased">
   <!-- Minimal Nav -->
   <header class="border-b border-[var(--border)] bg-[var(--bg-canvas)]/80 backdrop-blur-md sticky top-0 z-50">
     <div class="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between text-xs font-mono">
-      <a href="/#articles" class="text-[var(--text-muted)] hover:text-white flex items-center gap-1.5 transition-colors">
+      <a href="/#articles" class="text-[var(--text-muted)] hover:text-[var(--text-high)] flex items-center gap-1.5 transition-colors">
         ← /articles
       </a>
-      <span class="text-[var(--text-muted)]">
-        {post.data.date.toISOString().split('T')[0]}
-      </span>
+      <div class="flex items-center gap-4">
+        <span class="text-[var(--text-muted)]">
+          {post.data.date.toISOString().split('T')[0]}
+        </span>
+        <ThemeToggle />
+      </div>
     </div>
   </header>
 
-  <!-- Article Viewport with Generous Spacing -->
+  <!-- Article Viewport -->
   <main class="max-w-3xl mx-auto px-6 py-16 sm:py-20">
     <header class="mb-14 pb-10 border-b border-[var(--border)] space-y-5">
       <div class="text-xs font-mono text-sky-400 font-semibold uppercase tracking-wider">
         {post.data.categories?.[0] || 'Engineering & Security'}
       </div>
-      <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-[1.2]">
+      <h1 class="text-3xl sm:text-5xl font-extrabold text-[var(--text-high)] tracking-tight leading-[1.2]">
         {post.data.title}
       </h1>
       <div class="flex flex-wrap gap-2 pt-2">
@@ -58,20 +70,19 @@ const { Content } = await render(post);
       </div>
     </header>
 
-    <!-- Content with breathing room -->
+    <!-- Content -->
     <article class="article-content max-w-none text-[17px] sm:text-[18px] text-[var(--text-body)] leading-[1.85]">
       <Content />
     </article>
-    <!-- Modern Author & Social Card -->
+
+    <!-- Author & Social Card -->
     <section class="mt-16 pt-10 border-t border-[var(--border)]">
       <div class="panel p-6 sm:p-8 rounded-xl space-y-4">
-        <div class="flex items-center justify-between">
-          <div>
-            <h3 class="text-base font-bold text-white">Thanks for reading!</h3>
-            <p class="text-xs text-[var(--text-muted)] mt-0.5">
-              Follow along for more deep-dives into systems engineering, architecture, and security research.
-            </p>
-          </div>
+        <div>
+          <h3 class="text-base font-bold text-[var(--text-high)]">Thanks for reading!</h3>
+          <p class="text-xs text-[var(--text-muted)] mt-0.5">
+            Follow along for more deep-dives into systems engineering, architecture, and security research.
+          </p>
         </div>
 
         <div class="flex flex-wrap gap-2.5 pt-2">
@@ -110,7 +121,7 @@ const { Content } = await render(post);
     </section>
 
     <!-- Footer of Post -->
-    <div class="mt-20 pt-10 border-t border-[var(--border)] flex items-center justify-between text-xs font-mono text-[var(--text-muted)]">
+    <div class="mt-12 pt-8 border-t border-[var(--border)] flex items-center justify-between text-xs font-mono text-[var(--text-muted)]">
       <a href="/#articles" class="text-sky-400 hover:underline">← Back to Articles</a>
       <span>Written by Sahil Singh Rawat</span>
     </div>
