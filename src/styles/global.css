@@ -6,7 +6,7 @@
     --bg-canvas: #090a0f;
     --bg-surface: #11131a;
     --bg-surface-hover: #171b26;
-    --bg-code: #0b0e14;
+    --bg-code: #0d1117;
     --border: #1f2433;
     --border-hover: #2f364d;
     --text-high: #f1f5f9;
@@ -116,7 +116,8 @@ body {
   font-style: italic;
 }
 
-.article-content code {
+/* Only style INLINE code pills - NEVER touch <pre> blocks */
+.article-content :not(pre) > code {
   color: var(--accent);
   background: var(--bg-surface);
   border: 1px solid var(--border);
@@ -125,9 +126,8 @@ body {
   font-size: 0.88em;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
-
-.article-content pre {
-  background-color: var(--bg-code) !important;
+/* Code block container layout */
+.article-content pre.astro-code {
   border: 1px solid var(--border) !important;
   border-radius: 0.65rem;
   padding: 1.35rem 1.5rem !important;
@@ -138,8 +138,31 @@ body {
   font-size: 0.9em !important;
 }
 
-.article-content pre code {
+.article-content pre.astro-code code {
   background: transparent !important;
   border: none !important;
   padding: 0 !important;
+}
+
+/* Background management */
+html:not(.light) pre.astro-code {
+  background-color: #0d1117 !important;
+}
+
+html.light pre.astro-code {
+  background-color: #f6f8fa !important;
+}
+
+/* Shiki Dual-Theme Token Switcher */
+/* Only applies --shiki-dark when defined, preserving inline syntax colors */
+html:not(.light) .astro-code span[style*="--shiki-dark"] {
+  color: var(--shiki-dark) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+}
+
+html.light .astro-code span[style*="--shiki-light"] {
+  color: var(--shiki-light) !important;
+  font-style: var(--shiki-light-font-style) !important;
+  font-weight: var(--shiki-light-font-weight) !important;
 }

@@ -13,7 +13,7 @@ export default defineConfig({
     shikiConfig: {
       themes: {
         light: 'github-light',
-        dark: 'tokyo-night',
+        dark: 'one-dark-pro', // vibrant palette for Java, Go, JS, Bash
       },
       wrap: true,
     },
