@@ -3,6 +3,7 @@ title: Hacking the AI - A Developer’s Guide to Prompt Injection & LLM Security
 date: 2025-11-22 17:00:00 +0530
 categories: [Research,Web]
 tags: [AI, LLM, OWASP]
+featured: true
 ---
 ![](https://github.com/sahil-rawat/assets/blob/master/IMG/LLM-HACKING.jpg?raw=true)
 

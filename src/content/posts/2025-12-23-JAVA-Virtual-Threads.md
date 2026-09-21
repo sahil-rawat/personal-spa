@@ -3,6 +3,7 @@ title: Java Internals - Virtual Threads & The End of Reactive Complexity
 date: 2025-12-23 10:30:00 +0530
 categories: [Devlopment,java]
 tags: [java]
+featured: true
 ---
 ![](https://github.com/sahil-rawat/assets/blob/master/IMG/MAIN9.jpg?raw=true)
 

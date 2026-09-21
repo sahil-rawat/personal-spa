@@ -13,7 +13,12 @@ const sortedPosts = allPosts
     summary: p.data.description || p.body?.slice(0, 150).replace(/[#*`]/g, '') + '...',
     tags: p.data.tags || [],
     category: p.data.categories?.[0] || 'Software & Systems',
+    featured: p.data.featured || false,
   }));
+
+// Isolate pinned posts (or fall back to the first 2 newest posts if none are pinned)
+const featuredPosts = sortedPosts.filter((p) => p.featured);
+const displayFeatured = featuredPosts.length > 0 ? featuredPosts : sortedPosts.slice(0, 2);
 
 const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
 ---
@@ -34,7 +39,6 @@ const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
   </script>
 </head>
 <body class="min-h-screen">
-  <!-- Subtle top glow -->
   <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[260px] bg-sky-500/10 blur-[120px] pointer-events-none -z-10"></div>
 
   <!-- Header -->
@@ -67,7 +71,7 @@ const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
           Sahil Singh Rawat
         </h1>
         <p class="text-lg text-[var(--text-body)] leading-relaxed font-normal">
-          Architecting resilient distributed systems. Obsessed with low-level execution, backend performance, and offensive security analysis.
+          Software Architect & Backend Engineer. Designing resilient distributed infrastructure, optimizing JVM concurrency runtimes, and conducting offensive vulnerability research.
         </p>
       </div>
 
@@ -87,7 +91,6 @@ const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <!-- 01: Architecture -->
         <div class="panel p-5 rounded-lg">
           <div class="text-sky-400 text-xs font-mono font-bold mb-2">01 / ARCHITECTURE</div>
           <h3 class="text-base font-semibold text-[var(--text-high)] mb-2">Distributed Systems & Backends</h3>
@@ -96,7 +99,6 @@ const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
           </p>
         </div>
 
-        <!-- 02: Security -->
         <div class="panel p-5 rounded-lg">
           <div class="text-sky-400 text-xs font-mono font-bold mb-2">02 / SECURITY</div>
           <h3 class="text-base font-semibold text-[var(--text-high)] mb-2">Offensive Security & AppSec</h3>
@@ -105,7 +107,6 @@ const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
           </p>
         </div>
 
-        <!-- 03: Research -->
         <div class="panel p-5 rounded-lg">
           <div class="text-sky-400 text-xs font-mono font-bold mb-2">03 / RESEARCH</div>
           <h3 class="text-base font-semibold text-[var(--text-high)] mb-2">Emerging Tech & Internals</h3>
@@ -115,12 +116,47 @@ const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
         </div>
       </div>
     </section>
-    
+
+    <!-- Featured / Pinned Deep-Dives -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between border-b border-[var(--border)] pb-3">
+        <h2 class="text-xs font-mono uppercase tracking-widest text-sky-400 font-bold flex items-center gap-2">
+          <span>★</span> Featured Research & Architecture Deep-Dives
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {displayFeatured.map((post) => (
+          <a
+            href={`/posts/${post.slug}/`}
+            class="panel p-6 rounded-lg group border-sky-500/20 hover:border-sky-500/50 flex flex-col justify-between"
+          >
+            <div class="space-y-2">
+              <div class="flex items-center justify-between text-xs font-mono text-[var(--text-muted)]">
+                <span class="text-sky-400 font-semibold">{post.category}</span>
+                <span>{post.date}</span>
+              </div>
+              <h3 class="text-lg font-bold text-[var(--text-high)] group-hover:text-sky-400 transition-colors">
+                {post.title}
+              </h3>
+              <p class="text-xs text-[var(--text-body)] leading-relaxed line-clamp-3">
+                {post.summary}
+              </p>
+            </div>
+            <div class="pt-4 mt-4 border-t border-[var(--border)] flex items-center justify-between text-xs font-mono text-sky-400">
+              <span>Read deep-dive →</span>
+              <span class="text-[var(--text-muted)]">#{post.tags[0] || 'research'}</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+
     <!-- Articles Feed with Interactive Search & Filters -->
     <section id="articles" class="space-y-6">
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[var(--border)] pb-4">
         <div>
-          <h2 class="text-lg font-bold text-[var(--text-high)] tracking-tight">Technical Articles</h2>
+          <h2 class="text-lg font-bold text-[var(--text-high)] tracking-tight">All Technical Articles</h2>
           <p class="text-xs text-[var(--text-muted)] mt-0.5">Deep-dives, architecture blueprints, and exploit walkthroughs.</p>
         </div>
 

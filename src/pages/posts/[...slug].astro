@@ -18,7 +18,9 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings, remarkPluginFrontmatter } = await render(post);
+const filteredHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const readingTime = remarkPluginFrontmatter?.readingTime || '4 min read';
 ---
 
 <!DOCTYPE html>
@@ -37,94 +39,175 @@ const { Content } = await render(post);
   </script>
 </head>
 <body class="min-h-screen bg-[var(--bg-canvas)] text-[var(--text-high)] antialiased">
+  <!-- Reading Progress Bar -->
+  <div id="scroll-progress" class="fixed top-0 left-0 h-0.5 bg-sky-400 z-[100] w-0 transition-all duration-75 ease-out"></div>
+
   <!-- Minimal Nav -->
   <header class="border-b border-[var(--border)] bg-[var(--bg-canvas)]/80 backdrop-blur-md sticky top-0 z-50">
-    <div class="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between text-xs font-mono">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between text-xs font-mono">
       <a href="/#articles" class="text-[var(--text-muted)] hover:text-[var(--text-high)] flex items-center gap-1.5 transition-colors">
         ← /articles
       </a>
       <div class="flex items-center gap-4">
         <span class="text-[var(--text-muted)]">
-          {post.data.date.toISOString().split('T')[0]}
+          {post.data.date.toISOString().split('T')[0]} · {readingTime}
         </span>
         <ThemeToggle />
       </div>
     </div>
   </header>
 
-  <!-- Article Viewport -->
-  <main class="max-w-3xl mx-auto px-6 py-16 sm:py-20">
-    <header class="mb-14 pb-10 border-b border-[var(--border)] space-y-5">
-      <div class="text-xs font-mono text-sky-400 font-semibold uppercase tracking-wider">
-        {post.data.categories?.[0] || 'Engineering & Security'}
-      </div>
-      <h1 class="text-3xl sm:text-5xl font-extrabold text-[var(--text-high)] tracking-tight leading-[1.2]">
-        {post.data.title}
-      </h1>
-      <div class="flex flex-wrap gap-2 pt-2">
-        {post.data.tags.map((tag: string) => (
-          <span class="text-xs font-mono text-[var(--text-muted)] bg-[var(--bg-surface)] border border-[var(--border)] px-2.5 py-1 rounded">
-            #{tag}
+  <!-- Main Grid with Sticky TOC -->
+  <div class="max-w-6xl mx-auto px-6 py-16 sm:py-20 lg:grid lg:grid-cols-[minmax(0,1fr)_250px] lg:gap-14">
+    <!-- Main Article Column -->
+    <main class="min-w-0 max-w-3xl">
+      <header class="mb-14 pb-10 border-b border-[var(--border)] space-y-5">
+        <div class="flex items-center gap-3 text-xs font-mono">
+          <span class="text-sky-400 font-semibold uppercase tracking-wider">
+            {post.data.categories?.[0] || 'Engineering & Security'}
           </span>
-        ))}
-      </div>
-    </header>
-
-    <!-- Content -->
-    <article class="article-content max-w-none text-[17px] sm:text-[18px] text-[var(--text-body)] leading-[1.85]">
-      <Content />
-    </article>
-
-    <!-- Author & Social Card -->
-    <section class="mt-16 pt-10 border-t border-[var(--border)]">
-      <div class="panel p-6 sm:p-8 rounded-xl space-y-4">
-        <div>
-          <h3 class="text-base font-bold text-[var(--text-high)]">Thanks for reading!</h3>
-          <p class="text-xs text-[var(--text-muted)] mt-0.5">
-            Follow along for more deep-dives into systems engineering, architecture, and security research.
-          </p>
+          <span class="text-[var(--border)]">/</span>
+          <span class="text-[var(--text-muted)]">{readingTime}</span>
         </div>
 
-        <div class="flex flex-wrap gap-2.5 pt-2">
-          <a
-            href="https://twitter.com/sahil_s_rawat"
-            target="_blank"
-            rel="noreferrer"
-            class="px-3 py-1.5 rounded-md border border-[var(--border)] bg-[var(--bg-canvas)] hover:border-sky-400 hover:text-sky-400 text-xs font-mono text-[var(--text-body)] transition-all flex items-center gap-1.5"
-          >
-            Twitter / X ↗
-          </a>
-          <a
-            href="https://www.linkedin.com/in/sahil-singh-rawat"
-            target="_blank"
-            rel="noreferrer"
-            class="px-3 py-1.5 rounded-md border border-[var(--border)] bg-[var(--bg-canvas)] hover:border-sky-400 hover:text-sky-400 text-xs font-mono text-[var(--text-body)] transition-all flex items-center gap-1.5"
-          >
-            LinkedIn ↗
-          </a>
-          <a
-            href="https://github.com/sahil-rawat"
-            target="_blank"
-            rel="noreferrer"
-            class="px-3 py-1.5 rounded-md border border-[var(--border)] bg-[var(--bg-canvas)] hover:border-sky-400 hover:text-sky-400 text-xs font-mono text-[var(--text-body)] transition-all flex items-center gap-1.5"
-          >
-            GitHub ↗
-          </a>
-          <a
-            href="/"
-            class="px-3 py-1.5 rounded-md border border-[var(--border)] bg-[var(--bg-canvas)] hover:border-sky-400 hover:text-sky-400 text-xs font-mono text-[var(--text-body)] transition-all flex items-center gap-1.5"
-          >
-            Overview / Home ↗
-          </a>
-        </div>
-      </div>
-    </section>
+        <h1 class="text-3xl sm:text-5xl font-extrabold text-[var(--text-high)] tracking-tight leading-[1.2]">
+          {post.data.title}
+        </h1>
 
-    <!-- Footer of Post -->
-    <div class="mt-12 pt-8 border-t border-[var(--border)] flex items-center justify-between text-xs font-mono text-[var(--text-muted)]">
-      <a href="/#articles" class="text-sky-400 hover:underline">← Back to Articles</a>
-      <span>Written by Sahil Singh Rawat</span>
-    </div>
-  </main>
+        <div class="flex flex-wrap gap-2 pt-2">
+          {post.data.tags.map((tag: string) => (
+            <span class="text-xs font-mono text-[var(--text-muted)] bg-[var(--bg-surface)] border border-[var(--border)] px-2.5 py-1 rounded">
+              #{tag}
+            </span>
+          ))}
+        </div>
+      </header>
+
+      <!-- Content -->
+      <article class="article-content max-w-none text-[17px] sm:text-[18px] text-[var(--text-body)] leading-[1.85]">
+        <Content />
+      </article>
+
+      <!-- Author Card -->
+      <section class="mt-16 pt-10 border-t border-[var(--border)]">
+        <div class="panel p-6 sm:p-8 rounded-xl space-y-4">
+          <div>
+            <h3 class="text-base font-bold text-[var(--text-high)]">Thanks for reading!</h3>
+            <p class="text-xs text-[var(--text-muted)] mt-0.5">
+              Follow along for more deep-dives into systems engineering, architecture, and security research.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap gap-2.5 pt-2">
+            <a
+              href="https://twitter.com/sahil_s_rawat"
+              target="_blank"
+              rel="noreferrer"
+              class="px-3 py-1.5 rounded-md border border-[var(--border)] bg-[var(--bg-canvas)] hover:border-sky-400 hover:text-sky-400 text-xs font-mono text-[var(--text-body)] transition-all"
+            >
+              Twitter / X ↗
+            </a>
+            <a
+              href="https://www.linkedin.com/in/sahil-singh-rawat"
+              target="_blank"
+              rel="noreferrer"
+              class="px-3 py-1.5 rounded-md border border-[var(--border)] bg-[var(--bg-canvas)] hover:border-sky-400 hover:text-sky-400 text-xs font-mono text-[var(--text-body)] transition-all"
+            >
+              LinkedIn ↗
+            </a>
+            <a
+              href="https://github.com/sahil-rawat"
+              target="_blank"
+              rel="noreferrer"
+              class="px-3 py-1.5 rounded-md border border-[var(--border)] bg-[var(--bg-canvas)] hover:border-sky-400 hover:text-sky-400 text-xs font-mono text-[var(--text-body)] transition-all"
+            >
+              GitHub ↗
+            </a>
+            <a
+              href="/"
+              class="px-3 py-1.5 rounded-md border border-[var(--border)] bg-[var(--bg-canvas)] hover:border-sky-400 hover:text-sky-400 text-xs font-mono text-[var(--text-body)] transition-all"
+            >
+              Overview / Home ↗
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <div class="mt-12 pt-8 border-t border-[var(--border)] flex items-center justify-between text-xs font-mono text-[var(--text-muted)]">
+        <a href="/#articles" class="text-sky-400 hover:underline">← Back to Articles</a>
+        <span>Written by Sahil Singh Rawat</span>
+      </div>
+    </main>
+
+    <!-- Sticky Table of Contents Sidebar (Desktop) -->
+    {filteredHeadings.length > 0 && (
+      <aside class="hidden lg:block">
+        <div class="sticky top-24 space-y-3">
+          <h4 class="text-xs font-mono uppercase tracking-widest text-[var(--text-muted)] font-bold">
+            Table of Contents
+          </h4>
+          <nav class="space-y-1 text-xs font-mono border-l border-[var(--border)]">
+            {filteredHeadings.map((heading) => (
+              <a
+                href={`#${heading.slug}`}
+                class={`block py-1 text-[var(--text-muted)] hover:text-sky-400 hover:border-l hover:border-sky-400 transition-colors ${
+                  heading.depth === 3 ? 'pl-6 text-[11px]' : 'pl-3'
+                }`}
+              >
+                {heading.text}
+              </a>
+            ))}
+          </nav>
+        </div>
+      </aside>
+    )}
+  </div>
+
+  <!-- Client Script: Scroll Progress + Copy Code Buttons -->
+  <script is:inline>
+    // 1. Reading Progress Bar
+    const progressBar = document.getElementById('scroll-progress');
+    window.addEventListener('scroll', () => {
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (totalHeight > 0) {
+        const progress = (window.scrollY / totalHeight) * 100;
+        progressBar.style.width = progress + '%';
+      }
+    });
+
+    // 2. Add Copy Button to all <pre> blocks
+    const codeBlocks = document.querySelectorAll('pre.astro-code');
+    codeBlocks.forEach((pre) => {
+      const container = document.createElement('div');
+      container.className = 'relative group';
+
+      pre.parentNode.insertBefore(container, pre);
+      container.appendChild(pre);
+
+      const copyBtn = document.createElement('button');
+      copyBtn.className =
+        'absolute top-3 right-3 px-2.5 py-1 rounded text-xs font-mono bg-[var(--bg-surface)] border border-[var(--border)] text-[var(--text-muted)] opacity-0 group-hover:opacity-100 focus:opacity-100 transition-all hover:text-[var(--text-high)] hover:border-[var(--border-hover)]';
+      copyBtn.innerText = 'Copy';
+      copyBtn.type = 'button';
+      copyBtn.setAttribute('aria-label', 'Copy code to clipboard');
+
+      copyBtn.addEventListener('click', async () => {
+        const code = pre.querySelector('code')?.innerText || pre.innerText;
+        try {
+          await navigator.clipboard.writeText(code);
+          copyBtn.innerText = 'Copied!';
+          copyBtn.classList.add('text-sky-400', 'border-sky-500/40');
+          setTimeout(() => {
+            copyBtn.innerText = 'Copy';
+            copyBtn.classList.remove('text-sky-400', 'border-sky-500/40');
+          }, 2000);
+        } catch (err) {
+          copyBtn.innerText = 'Failed';
+        }
+      });
+
+      container.appendChild(copyBtn);
+    });
+  </script>
 </body>
 </html>

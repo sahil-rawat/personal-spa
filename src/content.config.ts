@@ -2,14 +2,21 @@ import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 const posts = defineCollection({
-  // Loads all markdown files from src/content/posts/
-  loader: glob({ pattern: '**/*.md', base: './src/content/posts' }),
+  // Use the glob loader pointing to your markdown files
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/posts' }),
   schema: z.object({
     title: z.string(),
     date: z.coerce.date(),
     description: z.string().optional(),
-    categories: z.array(z.string()).optional(),
-    tags: z.array(z.string()).default([]),
+    categories: z.union([
+      z.array(z.string()),
+      z.string().transform((val) => [val]),
+    ]).default(['Software & Systems']),
+    tags: z.union([
+      z.array(z.string()),
+      z.string().transform((val) => [val]),
+    ]).default([]),
+    featured: z.boolean().default(false),
   }),
 });
 
