@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+---
+
+<BaseLayout title="Page not found — Sahil Singh Rawat" noindex>
+  <header class="border-b border-[var(--border)] bg-[var(--bg-canvas)]/80 backdrop-blur-md">
+    <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between text-xs font-mono">
+      <a href="/" class="text-[var(--text-high)] font-semibold">sahilsinghrawat.com</a>
+      <ThemeToggle />
+    </div>
+  </header>
+  <main id="main" class="max-w-xl mx-auto px-6 py-32 text-center space-y-5">
+    <p class="font-mono text-sky-400 text-sm">404</p>
+    <h1 class="text-3xl font-extrabold tracking-tight">Page not found</h1>
+    <p class="text-[var(--text-body)]">That page doesn't exist or has moved.</p>
+    <a href="/#articles" class="inline-flex px-4 py-2 rounded-md bg-[var(--text-high)] text-[var(--bg-canvas)] font-semibold text-xs hover:opacity-90">Browse articles →</a>
+  </main>
+</BaseLayout>

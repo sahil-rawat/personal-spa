@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
+import sitemap from '@astrojs/sitemap';
 import { stripPostFooter } from './src/plugins/strip-footer.mjs';
 import { remarkReadingTime } from './src/plugins/remark-reading-time.mjs';
 
@@ -7,6 +8,7 @@ export default defineConfig({
   site: 'https://www.sahilsinghrawat.com',
   trailingSlash: 'always',
   output: 'static',
+  integrations: [sitemap({ filter: (page) => !page.includes('/404') })],
   vite: {
     plugins: [tailwindcss()],
   },

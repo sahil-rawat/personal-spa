@@ -1,14 +1,13 @@
 ---
-import '../../styles/global.css';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 import ThemeToggle from '../../components/ThemeToggle.astro';
 import { getCollection, render } from 'astro:content';
+import { normalizeCategory, postSlug, postDescription } from '../../lib/posts';
 
 export async function getStaticPaths() {
   const allPosts = await getCollection('posts');
   return allPosts.map((post) => {
-    const cleanSlug = post.id
-      .replace(/^\d{4}-\d{2}-\d{2}-/, '')
-      .replace(/\.md$/, '');
+    const cleanSlug = postSlug(post.id);
 
     return {
       params: { slug: cleanSlug },
@@ -20,25 +19,12 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content, headings, remarkPluginFrontmatter } = await render(post);
 const filteredHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const category = normalizeCategory(post.data.categories?.[0]);
 const readingTime = remarkPluginFrontmatter?.readingTime || '4 min read';
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{post.data.title} — Sahil Singh Rawat</title>
-  <script is:inline>
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'light' || (!savedTheme && window.matchMedia('(prefers-color-scheme: light)').matches)) {
-      document.documentElement.classList.add('light');
-    } else {
-      document.documentElement.classList.remove('light');
-    }
-  </script>
-</head>
-<body class="min-h-screen bg-[var(--bg-canvas)] text-[var(--text-high)] antialiased">
+<BaseLayout title={`${post.data.title} — Sahil Singh Rawat`} description={postDescription(post)} type="article" publishedTime={post.data.date.toISOString()}>
+
   <!-- Reading Progress Bar -->
   <div id="scroll-progress" class="fixed top-0 left-0 h-0.5 bg-sky-400 z-[100] w-0 transition-all duration-75 ease-out"></div>
 
@@ -60,11 +46,11 @@ const readingTime = remarkPluginFrontmatter?.readingTime || '4 min read';
   <!-- Main Grid with Sticky TOC -->
   <div class="max-w-6xl mx-auto px-6 py-16 sm:py-20 lg:grid lg:grid-cols-[minmax(0,1fr)_250px] lg:gap-14">
     <!-- Main Article Column -->
-    <main class="min-w-0 max-w-3xl">
+    <main id="main" class="min-w-0 max-w-3xl">
       <header class="mb-14 pb-10 border-b border-[var(--border)] space-y-5">
         <div class="flex items-center gap-3 text-xs font-mono">
           <span class="text-sky-400 font-semibold uppercase tracking-wider">
-            {post.data.categories?.[0] || 'Engineering & Security'}
+            {category}
           </span>
           <span class="text-[var(--border)]">/</span>
           <span class="text-[var(--text-muted)]">{readingTime}</span>
@@ -174,6 +160,12 @@ const readingTime = remarkPluginFrontmatter?.readingTime || '4 min read';
         const progress = (window.scrollY / totalHeight) * 100;
         progressBar.style.width = progress + '%';
       }
+    }, { passive: true });
+
+    // Lazy-load article images
+    document.querySelectorAll('.article-content img').forEach((img) => {
+      img.loading = 'lazy';
+      img.decoding = 'async';
     });
 
     // 2. Add Copy Button to all <pre> blocks
@@ -187,7 +179,7 @@ const readingTime = remarkPluginFrontmatter?.readingTime || '4 min read';
 
       const copyBtn = document.createElement('button');
       copyBtn.className =
-        'absolute top-3 right-3 px-2.5 py-1 rounded text-xs font-mono bg-[var(--bg-surface)] border border-[var(--border)] text-[var(--text-muted)] opacity-0 group-hover:opacity-100 focus:opacity-100 transition-all hover:text-[var(--text-high)] hover:border-[var(--border-hover)]';
+        'absolute top-3 right-3 px-2.5 py-1 rounded text-xs font-mono bg-[var(--bg-surface)] border border-[var(--border)] text-[var(--text-muted)] opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 transition-all hover:text-[var(--text-high)] hover:border-[var(--border-hover)]';
       copyBtn.innerText = 'Copy';
       copyBtn.type = 'button';
       copyBtn.setAttribute('aria-label', 'Copy code to clipboard');
@@ -210,5 +202,4 @@ const readingTime = remarkPluginFrontmatter?.readingTime || '4 min read';
       container.appendChild(copyBtn);
     });
   </script>
-</body>
-</html>
+</BaseLayout>

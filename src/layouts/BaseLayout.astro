@@ -1,0 +1,65 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  type?: 'website' | 'article';
+  publishedTime?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = 'Software architect and backend engineer writing about distributed systems, JVM internals, and application security.',
+  type = 'website',
+  publishedTime,
+  noindex = false,
+} = Astro.props;
+
+const siteUrl = Astro.site ?? new URL('https://www.sahilsinghrawat.com');
+const canonical = new URL(Astro.url.pathname, siteUrl).href;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  {noindex && <meta name="robots" content="noindex" />}
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon.ico" sizes="32x32" />
+  <link rel="apple-touch-icon" href="/assets/img/favicons/apple-touch-icon.png" />
+  <link rel="manifest" href="/assets/img/favicons/site.webmanifest" />
+  <link rel="alternate" type="application/rss+xml" title="Sahil Singh Rawat" href="/rss.xml" />
+  <link rel="sitemap" href="/sitemap-index.xml" />
+
+  <meta property="og:site_name" content="Sahil Singh Rawat" />
+  <meta property="og:type" content={type} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  {publishedTime && <meta property="article:published_time" content={publishedTime} />}
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@sahil_s_rawat" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+
+  <script is:inline>
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light' || (!savedTheme && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.add('light');
+    } else {
+      document.documentElement.classList.remove('light');
+    }
+  </script>
+</head>
+<body class="min-h-screen bg-[var(--bg-canvas)] text-[var(--text-high)] antialiased">
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[200] focus:px-3 focus:py-2 focus:rounded-md focus:bg-[var(--text-high)] focus:text-[var(--bg-canvas)] text-xs font-mono">Skip to content</a>
+  <slot />
+</body>
+</html>

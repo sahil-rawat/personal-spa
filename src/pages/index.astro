@@ -1,7 +1,8 @@
 ---
-import '../styles/global.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
 import { getCollection } from 'astro:content';
+import { normalizeCategory, postSlug, postDescription } from '../lib/posts';
 
 const allPosts = await getCollection('posts');
 const sortedPosts = allPosts
@@ -9,10 +10,10 @@ const sortedPosts = allPosts
   .map((p) => ({
     title: p.data.title,
     date: p.data.date.toISOString().split('T')[0],
-    slug: p.id.replace(/^\d{4}-\d{2}-\d{2}-/, '').replace(/\.md$/, ''),
-    summary: p.data.description || p.body?.slice(0, 150).replace(/[#*`]/g, '') + '...',
+    slug: postSlug(p.id),
+    summary: postDescription(p),
     tags: p.data.tags || [],
-    category: p.data.categories?.[0] || 'Software & Systems',
+    category: normalizeCategory(p.data.categories?.[0]),
     featured: p.data.featured || false,
   }));
 
@@ -23,22 +24,8 @@ const displayFeatured = featuredPosts.length > 0 ? featuredPosts : sortedPosts.s
 const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sahil Singh Rawat — Software Architect & Security Researcher</title>
-  <script is:inline>
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'light' || (!savedTheme && window.matchMedia('(prefers-color-scheme: light)').matches)) {
-      document.documentElement.classList.add('light');
-    } else {
-      document.documentElement.classList.remove('light');
-    }
-  </script>
-</head>
-<body class="min-h-screen">
+<BaseLayout title="Sahil Singh Rawat — Software Architect & Security Researcher">
+
   <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[260px] bg-sky-500/10 blur-[120px] pointer-events-none -z-10"></div>
 
   <!-- Header -->
@@ -48,17 +35,18 @@ const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
         <span class="w-2.5 h-2.5 rounded-sm bg-sky-400 group-hover:rotate-45 transition-transform"></span>
         sahilsinghrawat.com
       </a>
-      <nav class="flex items-center gap-6 text-xs font-mono text-[var(--text-muted)]">
-        <a href="#about" class="hover:text-[var(--text-high)] transition-colors">/about</a>
-        <a href="#architecture" class="hover:text-[var(--text-high)] transition-colors">/architecture</a>
+      <nav aria-label="Primary" class="flex items-center gap-4 sm:gap-6 text-xs font-mono text-[var(--text-muted)]">
+        <a href="#about" class="hidden sm:inline hover:text-[var(--text-high)] transition-colors">/about</a>
+        <a href="#architecture" class="hidden sm:inline hover:text-[var(--text-high)] transition-colors">/architecture</a>
+        <a href="/rss.xml" class="hidden sm:inline hover:text-[var(--text-high)] transition-colors">/rss</a>
         <a href="#articles" class="text-sky-400 hover:text-sky-300 transition-colors font-medium">/articles</a>
-        <a href="https://github.com/sahil-rawat" target="_blank" rel="noreferrer" class="hover:text-[var(--text-high)] transition-colors">/github</a>
+        <a href="https://github.com/sahil-rawat" target="_blank" rel="noreferrer" class="hidden sm:inline hover:text-[var(--text-high)] transition-colors">/github</a>
         <ThemeToggle />
       </nav>
     </div>
   </header>
 
-  <main class="max-w-5xl mx-auto px-6 py-16 space-y-20">
+  <main id="main" class="max-w-5xl mx-auto px-6 py-16 space-y-20">
     <!-- Hero Section -->
     <section id="about" class="space-y-6">
       <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono bg-sky-500/10 text-sky-400 border border-sky-500/20">
@@ -94,7 +82,7 @@ const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
         <div class="panel p-5 rounded-lg">
           <div class="text-sky-400 text-xs font-mono font-bold mb-2">01 / ARCHITECTURE</div>
           <h3 class="text-base font-semibold text-[var(--text-high)] mb-2">Distributed Systems & Backends</h3>
-          <p class="text-xs text-[var(--text-body)] leading-relaxed">
+          <p class="text-sm text-[var(--text-body)] leading-relaxed">
             High-scale service meshes, event-driven pipelines, resilient fault tolerance, and multi-region data consistency.
           </p>
         </div>
@@ -102,7 +90,7 @@ const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
         <div class="panel p-5 rounded-lg">
           <div class="text-sky-400 text-xs font-mono font-bold mb-2">02 / SECURITY</div>
           <h3 class="text-base font-semibold text-[var(--text-high)] mb-2">Offensive Security & AppSec</h3>
-          <p class="text-xs text-[var(--text-body)] leading-relaxed">
+          <p class="text-sm text-[var(--text-body)] leading-relaxed">
             Adversarial attack surface analysis, authorization bypass chains (IDOR/BAC), SSRF cloud pivots, and secure runtime boundaries.
           </p>
         </div>
@@ -110,7 +98,7 @@ const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
         <div class="panel p-5 rounded-lg">
           <div class="text-sky-400 text-xs font-mono font-bold mb-2">03 / RESEARCH</div>
           <h3 class="text-base font-semibold text-[var(--text-high)] mb-2">Emerging Tech & Internals</h3>
-          <p class="text-xs text-[var(--text-body)] leading-relaxed">
+          <p class="text-sm text-[var(--text-body)] leading-relaxed">
             Investigating novel runtime mechanics, AI/LLM security paradigms, protocol vulnerabilities, and next-gen developer tooling.
           </p>
         </div>
@@ -139,7 +127,7 @@ const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
               <h3 class="text-lg font-bold text-[var(--text-high)] group-hover:text-sky-400 transition-colors">
                 {post.title}
               </h3>
-              <p class="text-xs text-[var(--text-body)] leading-relaxed line-clamp-3">
+              <p class="text-sm text-[var(--text-body)] leading-relaxed line-clamp-3">
                 {post.summary}
               </p>
             </div>
@@ -165,7 +153,7 @@ const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
           <input
             id="search-input"
             type="text"
-            placeholder="Filter by title, #tag, or CVE..."
+            placeholder="Filter by title or #tag…  ( / )" aria-label="Search articles"
             class="w-full bg-[var(--bg-surface)] border border-[var(--border)] focus:border-sky-400 text-xs text-[var(--text-high)] placeholder-[var(--text-muted)] rounded-md px-3 py-2 outline-none transition-colors font-mono"
           />
         </div>
@@ -212,7 +200,7 @@ const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
               </a>
             </h3>
 
-            <p class="text-xs text-[var(--text-body)] leading-relaxed mb-3">
+            <p class="text-sm text-[var(--text-body)] leading-relaxed mb-3">
               {post.summary}
             </p>
 
@@ -289,6 +277,13 @@ const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
       emptyState.classList.toggle('hidden', visibleCount > 0);
     }
 
+    document.addEventListener('keydown', (e) => {
+      if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) {
+        e.preventDefault();
+        searchInput.focus();
+      }
+    });
+
     searchInput.addEventListener('input', (e) => {
       searchQuery = e.target.value;
       filterArticles();
@@ -322,5 +317,4 @@ const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
       if (allCategoryBtn) allCategoryBtn.click();
     });
   </script>
-</body>
-</html>
+</BaseLayout>

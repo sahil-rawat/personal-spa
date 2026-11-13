@@ -1,0 +1,45 @@
+backend:
+  name: github
+  repo: sahil-rawat/personal-spa
+  branch: main
+  # OAuth proxy runs as a Cloudflare Pages Function on the same domain
+  base_url: https://www.sahilsinghrawat.com
+  auth_endpoint: api/auth
+
+# Uncomment to review changes through PRs (preview deploys) before publishing:
+# publish_mode: editorial_workflow
+
+media_folder: public/assets/img/posts
+public_folder: /assets/img/posts
+
+collections:
+  - name: posts
+    label: Posts
+    label_singular: Post
+    folder: src/content/posts
+    extension: md
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    summary: "{{date | date('YYYY-MM-DD')}} — {{title}}"
+    sortable_fields: [date, title]
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Date, name: date, widget: datetime, format: "YYYY-MM-DD HH:mm:ss ZZ", date_format: "YYYY-MM-DD", time_format: "HH:mm" }
+      - { label: Description, name: description, widget: text, required: false, hint: "Shown on cards, in search results and social previews (~150 chars)." }
+      - label: Categories
+        name: categories
+        widget: select
+        multiple: true
+        options:
+          - Programming
+          - Development
+          - BugBounty
+          - Penetration Testing
+          - Reverse Engineering
+          - Recon
+          - Research
+          - Intro
+        hint: "The first one is the primary category used for filtering."
+      - { label: Tags, name: tags, widget: list, required: false }
+      - { label: Featured, name: featured, widget: boolean, default: false, hint: "Pin to the homepage (if none are featured, the 2 newest show)." }
+      - { label: Body, name: body, widget: markdown }
