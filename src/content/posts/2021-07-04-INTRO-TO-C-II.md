@@ -2,9 +2,10 @@
 title: "Intro To C : Part II (Variables)"
 date: 2021-07-04 13:39:50 +0530
 categories: [Languages,C]
+series: "Intro to C"
 tags: [Languages]
 ---
-![](https://github.com/sahil-rawat/assets/blob/master/IMG/MAIN4.jpg?raw=true)
+![Intro To C : Part II (Variables) — figure 1](/assets/img/posts/MAIN4.jpg)
 
 This is the second post in the series [Intro To C](https://www.sahilsinghrawat.com/posts/INTRO-TO-C-I/) In the last post we introduced C language while going through a demo HelloWorld program and how to compile and build a C program.
 

@@ -2,9 +2,10 @@
 title: Gaining Access:Part II
 date: 2022-01-02 11:18:00 +0530
 categories: [Penetration Testing,Access]
+series: "Gaining Access"
 tags: [networking]
 ---
-![](https://github.com/sahil-rawat/assets/blob/master/IMG/GAIN_ACCESS2.jpg?raw=true)
+![Gaining Access:Part II — figure 1](/assets/img/posts/GAIN_ACCESS2.jpg)
 
 This is the Second Article in Gaining Access Series where we will be focussing on What is Social Engineering Attack? and how can we get started with it?
 

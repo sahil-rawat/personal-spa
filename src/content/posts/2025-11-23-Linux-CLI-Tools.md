@@ -4,7 +4,7 @@ date: 2025-11-23 11:30:00 +0530
 categories: [Devlopment,linux]
 tags: [linux]
 ---
-![](https://github.com/sahil-rawat/assets/blob/master/IMG/MAIN9.jpg?raw=true)
+![Mastering sed, grep, and Essential Linux Utilities - From Beginner to Guru — figure 1](/assets/img/posts/MAIN9.jpg)
 
 > A hands-on deep dive into the power of the Linux command line.
 

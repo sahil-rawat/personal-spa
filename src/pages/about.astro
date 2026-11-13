@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+---
+
+<BaseLayout title="About — Sahil Singh Rawat" description="Software architect and backend engineer working on distributed systems, JVM runtimes and offensive security research.">
+  <SiteHeader active="about" />
+  <main id="main" class="max-w-3xl mx-auto px-6 py-16 space-y-10">
+    <div class="space-y-3">
+      <h1 class="text-4xl font-extrabold tracking-tight">About</h1>
+      <p class="text-lg text-[var(--text-body)] leading-relaxed">
+        I'm Sahil Singh Rawat, a software architect and backend engineer. I design resilient distributed systems,
+        dig into JVM concurrency runtimes, and do offensive security research on the side.
+      </p>
+    </div>
+
+    <section class="space-y-3">
+      <h2 class="text-xs font-mono uppercase tracking-widest text-[var(--text-muted)] font-bold border-b border-[var(--border)] pb-2">What I write about</h2>
+      <ul class="space-y-2 text-[var(--text-body)] list-disc pl-5">
+        <li><strong class="text-[var(--text-high)]">Architecture</strong> — distributed systems, event-driven pipelines, fault tolerance.</li>
+        <li><strong class="text-[var(--text-high)]">Security</strong> — bug bounty write-ups, web vulnerabilities, malware analysis, penetration testing.</li>
+        <li><strong class="text-[var(--text-high)]">Internals</strong> — Java runtimes, Linux tooling, low-level C, and AI/LLM security.</li>
+      </ul>
+    </section>
+
+    <section class="space-y-3">
+      <h2 class="text-xs font-mono uppercase tracking-widest text-[var(--text-muted)] font-bold border-b border-[var(--border)] pb-2">Elsewhere</h2>
+      <p class="text-[var(--text-body)]">
+        I'm active on <a class="text-sky-400 hover:underline" href="https://www.hackthebox.eu/home/users/profile/303406" rel="noreferrer">Hack The Box</a>
+        and <a class="text-sky-400 hover:underline" href="https://tryhackme.com/p/sahilrawat" rel="noreferrer">TryHackMe</a>, and I take part in CTFs and hackathons.
+      </p>
+    </section>
+
+    <section class="space-y-3" id="contact">
+      <h2 class="text-xs font-mono uppercase tracking-widest text-[var(--text-muted)] font-bold border-b border-[var(--border)] pb-2">Contact</h2>
+      <p class="text-[var(--text-body)]">The best way to reach me is email. I also read messages on social media.</p>
+      <div class="flex flex-wrap gap-2.5">
+        <a href="mailto:contact@sahilsinghrawat.com" class="px-3 py-1.5 rounded-md border border-[var(--border)] bg-[var(--bg-surface)] hover:border-sky-400 hover:text-sky-400 text-xs font-mono transition-all">Email</a>
+        <a href="https://github.com/sahil-rawat" target="_blank" rel="noreferrer" class="px-3 py-1.5 rounded-md border border-[var(--border)] bg-[var(--bg-surface)] hover:border-sky-400 hover:text-sky-400 text-xs font-mono transition-all">GitHub ↗</a>
+        <a href="https://www.linkedin.com/in/sahil-singh-rawat" target="_blank" rel="noreferrer" class="px-3 py-1.5 rounded-md border border-[var(--border)] bg-[var(--bg-surface)] hover:border-sky-400 hover:text-sky-400 text-xs font-mono transition-all">LinkedIn ↗</a>
+        <a href="https://twitter.com/sahil_s_rawat" target="_blank" rel="noreferrer" class="px-3 py-1.5 rounded-md border border-[var(--border)] bg-[var(--bg-surface)] hover:border-sky-400 hover:text-sky-400 text-xs font-mono transition-all">Twitter / X ↗</a>
+      </div>
+    </section>
+  </main>
+  <SiteFooter />
+</BaseLayout>

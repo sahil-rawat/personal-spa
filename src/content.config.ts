@@ -17,6 +17,9 @@ const posts = defineCollection({
       z.string().transform((val) => [val]),
     ]).default([]),
     featured: z.boolean().default(false),
+    draft: z.boolean().default(false),
+    updated: z.coerce.date().optional(),
+    series: z.string().optional(),
   }),
 });
 

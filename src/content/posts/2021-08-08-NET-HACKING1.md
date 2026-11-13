@@ -2,9 +2,10 @@
 title: Network Hacking:Part I
 date: 2021-08-08 13:14:00 +0530
 categories: [Penetration Testing,Networking]
+series: "Network Hacking"
 tags: [networking]
 ---
-![](https://github.com/sahil-rawat/assets/blob/master/IMG/MAIN11.jpg?raw=true)
+![Network Hacking:Part I — figure 1](/assets/img/posts/MAIN11.jpg)
 
 In this series, we will start with the basics of network hacking.
 
@@ -147,7 +148,7 @@ It will start the Packet sniffer and shows information about wifi networks aroun
 
 The program outputs the details about the network in the first section and the second section, all the clients/devices connected to the network are shown.
 
-![](https://github.com/sahil-rawat/assets/blob/master/IMG/NET_HACKING_I_AIRDUMP.png?raw=true)
+![Network Hacking:Part I — figure 2](/assets/img/posts/NET_HACKING_I_AIRDUMP.png)
 
 Now breaking down each column of the output of the above command as shown in the image:
 

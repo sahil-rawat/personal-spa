@@ -5,7 +5,7 @@ categories: [BugBounty,Web]
 tags: [web]
 ---
 
-![](https://github.com/sahil-rawat/assets/blob/master/IMG/MAIN.jpg?raw=true)
+![HTTP:Where, What, Why? — figure 1](/assets/img/posts/MAIN.jpg)
 
 I am going to start a series on web application security 🧑🏻‍💻, which will contain posts related to topics ranging from how a website works to various common vulnerabilities found in websites. This series will be helpful for beginners who are starting in web application security or 🐞 bug-bounty.
 
@@ -17,7 +17,7 @@ Let's get Started! 💯
 
 What is a protocol? A protocol is a system of rules that defines how data is exchanged within or between computers.
 
-![](https://github.com/sahil-rawat/assets/blob/master/IMG/HTTP_WWW_INTRO.png?raw=true)
+![HTTP:Where, What, Why? — figure 2](/assets/img/posts/HTTP_WWW_INTRO.png)
 
 The HTTP protocol allows us to fetch or send resources from or to the server, In Simple terms, It is a pre-defined set of rules that need to be followed while communicating with the server. 
 For example, if we want to fetch data we need to initiate a GET request, and the format of this request is pre-defined which we need to follow while sending this request.
@@ -122,7 +122,7 @@ If you want to explore more about how these HTTP requests are made and about var
 
 The built-in functionality of chrome dev tools in chrome browser is a great tool and used by many bug bounty hunters, This tool helps in breaking down every request made to the server when we visit a website or click a button.
 
-![](https://github.com/sahil-rawat/assets/blob/master/IMG/HTTP_WWW_DEVTOOL.gif?raw=true)
+![HTTP:Where, What, Why? — figure 3](/assets/img/posts/HTTP_WWW_DEVTOOL.gif)
 
 The usage is simple to open the website in a chrome browser then open the dev tools either right-click and then select *inspect* or use the shortcut key for Windows: *Ctrl+Shift+J* and Mac: *Cmd+ Opt+J*
 
@@ -136,7 +136,7 @@ For using it we need to change the proxy setting in the browser and add a proxy 
 
 here as we can see that the GET request is logged into the burp suite before going to the server.
 
-![](https://github.com/sahil-rawat/assets/blob/master/IMG/HTTP_WWW_BURP.png?raw=true)
+![HTTP:Where, What, Why? — figure 4](/assets/img/posts/HTTP_WWW_BURP.png)
 
 Happy Hunting 🔍🐞 
 --- 

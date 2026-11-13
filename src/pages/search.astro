@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+---
+
+<BaseLayout title="Search — Sahil Singh Rawat" description="Full-text search across all articles.">
+  <link rel="stylesheet" href="/pagefind/pagefind-ui.css" slot="head" />
+  <SiteHeader active="search" />
+  <main id="main" class="max-w-3xl mx-auto px-6 py-16 space-y-6">
+    <h1 class="text-3xl font-extrabold tracking-tight">Search</h1>
+    <div id="search"></div>
+    <noscript><p class="text-sm text-[var(--text-muted)]">Search needs JavaScript.</p></noscript>
+  </main>
+  <SiteFooter />
+
+  <script is:inline src="/pagefind/pagefind-ui.js"></script>
+  <script is:inline>
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!window.PagefindUI) {
+        document.getElementById('search').innerHTML =
+          '<p class="text-sm" style="color:var(--text-muted)">Search index is only built in production (npm run build).</p>';
+        return;
+      }
+      new PagefindUI({ element: '#search', showSubResults: true, autofocus: true, resetStyles: false });
+    });
+  </script>
+</BaseLayout>

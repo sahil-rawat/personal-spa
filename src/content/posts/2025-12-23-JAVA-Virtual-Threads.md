@@ -5,7 +5,7 @@ categories: [Devlopment,java]
 tags: [java]
 featured: true
 ---
-![](https://github.com/sahil-rawat/assets/blob/master/IMG/MAIN9.jpg?raw=true)
+![Java Internals - Virtual Threads & The End of Reactive Complexity — figure 1](/assets/img/posts/MAIN9.jpg)
 
 
 For the last decade, high-concurrency Java applications faced a difficult choice. If you wanted to handle thousands of concurrent requests, you had two options:
@@ -193,7 +193,7 @@ public class VirtualThreadsDemo {
 
 When running this on my local machine, the difference is night and day. Virtual threads finish almost instantly because they don't exhaust the OS memory. Platform threads, however, struggle to even initialize.
 
-![https://github.com/sahil-rawat/assets/blob/master/VIRTUAL_THREADS.png?raw=true](https://github.com/sahil-rawat/assets/blob/master/VIRTUAL_THREADS.png?raw=true)
+![/assets/img/posts/VIRTUAL_THREADS.png](/assets/img/posts/VIRTUAL_THREADS.png)
 
 ## Conclusion: The End of "Async" Anxiety
 

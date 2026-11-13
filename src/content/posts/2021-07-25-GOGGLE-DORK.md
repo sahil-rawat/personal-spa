@@ -4,7 +4,7 @@ date: 2021-07-25 13:39:50 +0530
 categories: [Recon, OSINT]
 tags: [Recon]
 ---
-![](https://github.com/sahil-rawat/assets/blob/master/IMG/MAIN.jpg?raw=true)
+![Google Dorking — figure 1](/assets/img/posts/MAIN.jpg)
 
 ## Search Engine
 
@@ -20,19 +20,19 @@ Another way a crawler may work is by finding and following all the URL's from th
 
 Let's Understand how this works
 
-![IMG1](https://github.com/sahil-rawat/assets/blob/master/IMG/GOOGLE_DORK_CRAWLER_I.png?raw=true)
+![IMG1](/assets/img/posts/GOOGLE_DORK_CRAWLER_I.png)
 
 A web crawler discovers a new domain say “somewebsite.com”, so it will scrap the entire content on the domain and look for various keywords like in our example `[Technology, Hacking, Science]` these keywords are discovered on the domain somewebsite.com all  these scraped data will be saved by search engines now anytime a user will search for a query with “Technology”, “Hacking” or “Science” in it the search engine will present “somewebsite.com” to the user.
 
 Now, what if the website contains another URL to a domain “new.somewebsite.com” then the crawler would scrape information from that domain as well and save it.
 
-![IMG2](https://github.com/sahil-rawat/assets/blob/master/IMG/GOOGLE_DORK_CRAWLER_II.png?raw=true)
+![IMG2](/assets/img/posts/GOOGLE_DORK_CRAWLER_II.png)
 
 Again if a new URL is discovered on “new.somewebsite.com” then crawler will traverse that as well, so this goes on and on,
 
 Now What if a user searches for a query with the keyword “Computer” now there may be a lot of websites with that keyword.
 
-![IMG3](https://github.com/sahil-rawat/assets/blob/master/IMG/GOOGLE_DORK_SEARCH_RES.png?raw=true)
+![IMG3](/assets/img/posts/GOOGLE_DORK_SEARCH_RES.png)
 
 Here we can see more than 500 million websites have the keyword computer, now how does the search engine decide in what order the websites should show up,
 

@@ -2,9 +2,10 @@
 title: "Intro To C : Part XII (Pointers Arithmetic)"
 date: 2021-07-14 13:39:50 +0530
 categories: [Languages,C]
+series: "Intro to C"
 tags: [Languages]
 ---
-![](https://github.com/sahil-rawat/assets/blob/master/IMG/MAIN.jpg?raw=true)
+![Intro To C : Part XII (Pointers Arithmetic) — figure 1](/assets/img/posts/MAIN.jpg)
 
 This is the tweltfh post in the series [Intro To C](https://www.sahilsinghrawat.com/posts/INTRO-TO-C-I/) In the last post we learned typedef
 

@@ -2,9 +2,10 @@
 title: "Intro To C : Part III (Operators)"
 date: 2021-07-04 13:39:50 +0530
 categories: [Languages,C]
+series: "Intro to C"
 tags: [Languages]
 ---
-![](https://github.com/sahil-rawat/assets/blob/master/IMG/MAIN5.jpg?raw=true)
+![Intro To C : Part III (Operators) — figure 1](/assets/img/posts/MAIN5.jpg)
 
 This is the third post in the series [Intro To C](https://www.sahilsinghrawat.com/posts/INTRO-TO-C-I/) In the last post we peeked into variables and data types in C language.
 

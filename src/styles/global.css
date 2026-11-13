@@ -11,7 +11,7 @@
     --border-hover: #2f364d;
     --text-high: #f1f5f9;
     --text-body: #94a3b8;
-    --text-muted: #64748b;
+    --text-muted: #8696ab;
     --accent: #38bdf8;
   }
 
@@ -26,7 +26,7 @@
     --text-high: #0f172a;
     --text-body: #475569;
     --text-muted: #64748b;
-    --accent: #0284c7;
+    --accent: #0369a1;
   }
 }
 
@@ -178,4 +178,66 @@ html.light .astro-code span[style*="--shiki-light"] {
   max-width: 100%;
   height: auto;
   border-radius: 0.5rem;
+}
+
+
+/* Accessible accent in light mode (sky-400 is too pale on white) */
+html.light .text-sky-400,
+html.light .hover\:text-sky-400:hover,
+html.light .group:hover .group-hover\:text-sky-400 {
+  color: var(--accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Heading anchors */
+.article-content .heading-anchor {
+  margin-left: 0.5rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.article-content :is(h2, h3, h4):hover .heading-anchor,
+.article-content .heading-anchor:focus {
+  opacity: 1;
+}
+.article-content :is(h1, h2, h3, h4) {
+  scroll-margin-top: 5rem;
+}
+
+/* TOC scrollspy */
+.toc-link.toc-active {
+  color: var(--accent);
+  border-left: 1px solid var(--accent);
+}
+
+/* Pagefind search UI theming */
+#search {
+  --pagefind-ui-scale: 0.95;
+  --pagefind-ui-primary: var(--accent);
+  --pagefind-ui-text: var(--text-high);
+  --pagefind-ui-background: var(--bg-surface);
+  --pagefind-ui-border: var(--border);
+  --pagefind-ui-tag: var(--bg-surface-hover);
+  --pagefind-ui-border-width: 1px;
+  --pagefind-ui-border-radius: 8px;
+  --pagefind-ui-font: inherit;
+}
+
+/* Print: clean article-only output */
+@media print {
+  header, footer, aside, nav, #scroll-progress, .heading-anchor, button {
+    display: none !important;
+  }
+  body, .article-content { background: #fff !important; color: #000 !important; }
+  .article-content a { color: #000; text-decoration: underline; }
+  .article-content a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.8em; }
+  pre.astro-code { white-space: pre-wrap !important; border: 1px solid #ccc !important; background: #f6f8fa !important; }
+  pre.astro-code span { color: #000 !important; }
+  img { max-width: 100% !important; break-inside: avoid; }
 }

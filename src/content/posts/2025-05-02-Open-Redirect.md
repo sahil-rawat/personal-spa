@@ -4,7 +4,7 @@ date: 2025-05-02 13:39:37 +0530
 categories: [BugBounty,Web]
 tags: [web]
 ---
-![](https://github.com/sahil-rawat/assets/blob/master/IMG/BUG1.jpg?raw=true)
+![A guide to Open Redirect — figure 1](/assets/img/posts/BUG1.jpg)
 
 Open Redirect also known as Unvalidated redirects and forwards is a very common vulnerability, It happens when a website takes untrusted input from the user and redirects the user from the web application to an untrusted site or resource that would be used further for malicious purposes.
 

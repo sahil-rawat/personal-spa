@@ -2,9 +2,10 @@
 title: Network Hacking:Part III
 date: 2021-08-10 18:48:00 +0530
 categories: [Penetration Testing,Networking]
+series: "Network Hacking"
 tags: [networking]
 ---
-![](https://github.com/sahil-rawat/assets/blob/master/IMG/MAIN7.jpg?raw=true)
+![Network Hacking:Part III — figure 1](/assets/img/posts/MAIN7.jpg)
 
 By now if you are following the series you were able to gain access to the network. Once we gain the access to the network we could perform the attacks discussed in this post,
 We could gather info about the devices connected to the network, we could intercept the data, or modify the data *(inject evil code)*
@@ -43,7 +44,7 @@ This is a quick scan and also shows the operating system of the discovered devic
 
 In a MITM attack, the hacker would be able to place himself in the middle of the connection and be able to intercept see and modify anything transferring between devices.
 
-![](https://github.com/sahil-rawat/assets/blob/master/IMG/NET_HACKING_III_MITM.png?raw=true)
+![Network Hacking:Part III — figure 2](/assets/img/posts/NET_HACKING_III_MITM.png)
 
 As we can see that all the data/communication transferring between the client and router is going via the attacker's machine
 

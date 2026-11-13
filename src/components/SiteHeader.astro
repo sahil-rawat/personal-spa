@@ -1,0 +1,24 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+const { active = '' } = Astro.props;
+const link = (name: string) =>
+  `transition-colors ${active === name ? 'text-sky-400 font-medium' : 'hover:text-[var(--text-high)]'}`;
+---
+
+<header class="border-b border-[var(--border)] bg-[var(--bg-canvas)]/80 backdrop-blur-md sticky top-0 z-50">
+  <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+    <a href="/" class="flex items-center gap-2 font-mono text-sm font-semibold tracking-tight text-[var(--text-high)] group">
+      <span class="w-2.5 h-2.5 rounded-sm bg-sky-400 group-hover:rotate-45 transition-transform"></span>
+      <span class="hidden min-[440px]:inline">sahilsinghrawat.com</span>
+      <span class="sr-only min-[440px]:hidden">Home</span>
+    </a>
+    <nav aria-label="Primary" class="flex items-center gap-4 sm:gap-6 text-xs font-mono text-[var(--text-muted)]">
+      <a href="/about/" class:list={[link('about'), 'hidden sm:inline']}>/about</a>
+      <a href="/articles/" class={link('articles')}>/articles</a>
+      <a href="/tags/" class:list={[link('tags'), 'hidden sm:inline']}>/tags</a>
+      <a href="/search/" class={link('search')}>/search</a>
+      <a href="https://github.com/sahil-rawat" target="_blank" rel="noreferrer" class="hidden md:inline hover:text-[var(--text-high)] transition-colors">/github</a>
+      <ThemeToggle />
+    </nav>
+  </div>
+</header>

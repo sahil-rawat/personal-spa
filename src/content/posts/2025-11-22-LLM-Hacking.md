@@ -5,7 +5,7 @@ categories: [Research,Web]
 tags: [AI, LLM, OWASP]
 featured: true
 ---
-![](https://github.com/sahil-rawat/assets/blob/master/IMG/LLM-HACKING.jpg?raw=true)
+![Hacking the AI - A Developer’s Guide to Prompt Injection & LLM Security — figure 1](/assets/img/posts/LLM-HACKING.jpg)
 
 It feels like we are watching history repeat itself.
 

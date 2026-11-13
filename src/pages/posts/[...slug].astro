@@ -1,29 +1,38 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ThemeToggle from '../../components/ThemeToggle.astro';
-import { getCollection, render } from 'astro:content';
-import { normalizeCategory, postSlug, postDescription } from '../../lib/posts';
+import { render } from 'astro:content';
+import {
+  getPosts, normalizeCategory, postSlug, postDescription, postUrl, isoDay, slugify, seriesParts, relatedPosts,
+} from '../../lib/posts';
 
 export async function getStaticPaths() {
-  const allPosts = await getCollection('posts');
+  const allPosts = await getPosts();
   return allPosts.map((post) => {
     const cleanSlug = postSlug(post.id);
 
     return {
       params: { slug: cleanSlug },
-      props: { post },
+      props: { post, allPosts },
     };
   });
 }
 
-const { post } = Astro.props;
+const { post, allPosts } = Astro.props;
 const { Content, headings, remarkPluginFrontmatter } = await render(post);
 const filteredHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 const category = normalizeCategory(post.data.categories?.[0]);
+const series = post.data.series;
+const parts = series ? seriesParts(allPosts, series) : [];
+const partIndex = parts.findIndex((p) => p.id === post.id);
+const prev = series ? parts[partIndex - 1] : allPosts[allPosts.findIndex((p) => p.id === post.id) + 1];
+const next = series ? parts[partIndex + 1] : allPosts[allPosts.findIndex((p) => p.id === post.id) - 1];
+const related = relatedPosts(post, allPosts);
+const slug = postSlug(post.id);
 const readingTime = remarkPluginFrontmatter?.readingTime || '4 min read';
 ---
 
-<BaseLayout title={`${post.data.title} — Sahil Singh Rawat`} description={postDescription(post)} type="article" publishedTime={post.data.date.toISOString()}>
+<BaseLayout title={`${post.data.title} — Sahil Singh Rawat`} description={postDescription(post)} type="article" publishedTime={post.data.date.toISOString()} image={`/og/${slug}.png`}>
 
   <!-- Reading Progress Bar -->
   <div id="scroll-progress" class="fixed top-0 left-0 h-0.5 bg-sky-400 z-[100] w-0 transition-all duration-75 ease-out"></div>
@@ -31,12 +40,12 @@ const readingTime = remarkPluginFrontmatter?.readingTime || '4 min read';
   <!-- Minimal Nav -->
   <header class="border-b border-[var(--border)] bg-[var(--bg-canvas)]/80 backdrop-blur-md sticky top-0 z-50">
     <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between text-xs font-mono">
-      <a href="/#articles" class="text-[var(--text-muted)] hover:text-[var(--text-high)] flex items-center gap-1.5 transition-colors">
+      <a href="/articles/" class="text-[var(--text-muted)] hover:text-[var(--text-high)] flex items-center gap-1.5 transition-colors">
         ← /articles
       </a>
       <div class="flex items-center gap-4">
         <span class="text-[var(--text-muted)]">
-          {post.data.date.toISOString().split('T')[0]} · {readingTime}
+          <time datetime={isoDay(post.data.date)}>{isoDay(post.data.date)}</time> · {readingTime}
         </span>
         <ThemeToggle />
       </div>
@@ -54,25 +63,69 @@ const readingTime = remarkPluginFrontmatter?.readingTime || '4 min read';
           </span>
           <span class="text-[var(--border)]">/</span>
           <span class="text-[var(--text-muted)]">{readingTime}</span>
+          {post.data.updated && (
+            <>
+              <span class="text-[var(--border)]">/</span>
+              <span class="text-[var(--text-muted)]">Updated <time datetime={isoDay(post.data.updated)}>{isoDay(post.data.updated)}</time></span>
+            </>
+          )}
         </div>
 
+        {series && (
+          <a href={`/series/${slugify(series)}/`} class="inline-block text-xs font-mono text-sky-400 hover:underline">
+            ◆ {series} — Part {partIndex + 1} of {parts.length}
+          </a>
+        )}
         <h1 class="text-3xl sm:text-5xl font-extrabold text-[var(--text-high)] tracking-tight leading-[1.2]">
           {post.data.title}
         </h1>
 
         <div class="flex flex-wrap gap-2 pt-2">
           {post.data.tags.map((tag: string) => (
-            <span class="text-xs font-mono text-[var(--text-muted)] bg-[var(--bg-surface)] border border-[var(--border)] px-2.5 py-1 rounded">
+            <a href={`/tags/${slugify(tag)}/`} class="text-xs font-mono text-[var(--text-muted)] bg-[var(--bg-surface)] border border-[var(--border)] hover:border-sky-400 hover:text-sky-400 px-2.5 py-1 rounded transition-colors">
               #{tag}
-            </span>
+            </a>
           ))}
         </div>
       </header>
 
       <!-- Content -->
-      <article class="article-content max-w-none text-[17px] sm:text-[18px] text-[var(--text-body)] leading-[1.85]">
+      <article data-pagefind-body class="article-content max-w-none text-[17px] sm:text-[18px] text-[var(--text-body)] leading-[1.85]">
         <Content />
       </article>
+
+      <!-- Prev / Next -->
+      {(prev || next) && (
+        <nav aria-label={series ? 'Series navigation' : 'More articles'} class="mt-14 grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {prev ? (
+            <a href={postUrl(prev)} class="panel p-4 rounded-lg group">
+              <span class="text-xs font-mono text-[var(--text-muted)]">← {series ? 'Previous part' : 'Older'}</span>
+              <span class="block mt-1 text-sm font-semibold text-[var(--text-high)] group-hover:text-sky-400 transition-colors">{prev.data.title}</span>
+            </a>
+          ) : <span />}
+          {next ? (
+            <a href={postUrl(next)} class="panel p-4 rounded-lg group sm:text-right">
+              <span class="text-xs font-mono text-[var(--text-muted)]">{series ? 'Next part' : 'Newer'} →</span>
+              <span class="block mt-1 text-sm font-semibold text-[var(--text-high)] group-hover:text-sky-400 transition-colors">{next.data.title}</span>
+            </a>
+          ) : <span />}
+        </nav>
+      )}
+
+      {related.length > 0 && (
+        <section class="mt-14" aria-labelledby="related-h">
+          <h2 id="related-h" class="text-xs font-mono uppercase tracking-widest text-[var(--text-muted)] font-bold mb-4">Related articles</h2>
+          <ul class="space-y-2">
+            {related.map((r) => (
+              <li>
+                <a href={postUrl(r)} class="text-sm text-[var(--text-body)] hover:text-sky-400 transition-colors">
+                  {r.data.title} <span class="font-mono text-xs text-[var(--text-muted)]">· {isoDay(r.data.date)}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <!-- Author Card -->
       <section class="mt-16 pt-10 border-t border-[var(--border)]">
@@ -121,7 +174,7 @@ const readingTime = remarkPluginFrontmatter?.readingTime || '4 min read';
 
 
       <div class="mt-12 pt-8 border-t border-[var(--border)] flex items-center justify-between text-xs font-mono text-[var(--text-muted)]">
-        <a href="/#articles" class="text-sky-400 hover:underline">← Back to Articles</a>
+        <a href="/articles/" class="text-sky-400 hover:underline">← Back to Articles</a>
         <span>Written by Sahil Singh Rawat</span>
       </div>
     </main>
@@ -133,15 +186,16 @@ const readingTime = remarkPluginFrontmatter?.readingTime || '4 min read';
           <h4 class="text-xs font-mono uppercase tracking-widest text-[var(--text-muted)] font-bold">
             Table of Contents
           </h4>
-          <nav class="space-y-1 text-xs font-mono border-l border-[var(--border)]">
+          <nav id="toc" aria-label="Table of contents" class="space-y-1 text-xs font-mono border-l border-[var(--border)]">
             {filteredHeadings.map((heading) => (
               <a
                 href={`#${heading.slug}`}
-                class={`block py-1 text-[var(--text-muted)] hover:text-sky-400 hover:border-l hover:border-sky-400 transition-colors ${
+                data-toc={heading.slug}
+                class={`toc-link block py-1 text-[var(--text-muted)] hover:text-sky-400 hover:border-l hover:border-sky-400 transition-colors ${
                   heading.depth === 3 ? 'pl-6 text-[11px]' : 'pl-3'
                 }`}
               >
-                {heading.text}
+                {heading.text.replace(/#$/, '')}
               </a>
             ))}
           </nav>
@@ -167,6 +221,24 @@ const readingTime = remarkPluginFrontmatter?.readingTime || '4 min read';
       img.loading = 'lazy';
       img.decoding = 'async';
     });
+
+    // TOC scrollspy
+    const tocLinks = [...document.querySelectorAll('.toc-link')];
+    if (tocLinks.length && 'IntersectionObserver' in window) {
+      const map = new Map(tocLinks.map((a) => [a.dataset.toc, a]));
+      const heads = [...map.keys()].map((id) => document.getElementById(id)).filter(Boolean);
+      const spy = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            tocLinks.forEach((a) => { a.classList.remove('toc-active'); a.removeAttribute('aria-current'); });
+            const a = map.get(e.target.id);
+            a?.classList.add('toc-active');
+            a?.setAttribute('aria-current', 'true');
+          }
+        });
+      }, { rootMargin: '-80px 0px -70% 0px' });
+      heads.forEach((h) => spy.observe(h));
+    }
 
     // 2. Add Copy Button to all <pre> blocks
     const codeBlocks = document.querySelectorAll('pre.astro-code');

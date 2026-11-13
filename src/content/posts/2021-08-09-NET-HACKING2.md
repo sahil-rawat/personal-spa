@@ -2,9 +2,10 @@
 title: Network Hacking:Part II
 date: 2021-08-09 11:38:00 +0530
 categories: [Penetration Testing,Networking]
+series: "Network Hacking"
 tags: [networking]
 ---
-![](https://github.com/sahil-rawat/assets/blob/master/IMG/MAIN10.jpg?raw=true)
+![Network Hacking:Part II — figure 1](/assets/img/posts/MAIN10.jpg)
 
 We learned about Pre-Authentication attacks in the last [tutorial](https://www.sahilsinghrawat.com/posts/NET-HACKING1), now moving forward in this article we will explore techniques of Gaining access to that network.
 

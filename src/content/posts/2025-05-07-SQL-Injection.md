@@ -4,7 +4,7 @@ date: 2025-05-07 11:34:00 +0530
 categories: [BugBounty,Web]
 tags: [web]
 ---
-![](https://github.com/sahil-rawat/assets/blob/master/IMG/BUG3.jpg?raw=true)
+![Intro to SQL Injection — figure 1](/assets/img/posts/BUG3.jpg)
 
 
 

@@ -2,9 +2,10 @@
 title: "Intro To C : Part IV (Flow Control)"
 date: 2021-07-05 13:39:50 +0530
 categories: [Languages,C]
+series: "Intro to C"
 tags: [Languages]
 ---
-![](https://github.com/sahil-rawat/assets/blob/master/IMG/MAIN7.jpg?raw=true)
+![Intro To C : Part IV (Flow Control) — figure 1](/assets/img/posts/MAIN7.jpg)
 
 This is the fourth post in the series [Intro To C](https://www.sahilsinghrawat.com/posts/INTRO-TO-C-I/) In the last post we learned about various operators in C Language
 

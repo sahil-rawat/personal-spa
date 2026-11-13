@@ -1,0 +1,13 @@
+---
+import { normalizeCategory, postUrl, postDescription, isoDay, type Post } from '../lib/posts';
+const { post } = Astro.props as { post: Post };
+---
+
+<a href={postUrl(post)} class="panel block p-5 rounded-lg group">
+  <div class="flex items-center justify-between text-xs font-mono text-[var(--text-muted)] mb-2">
+    <span class="text-sky-400 font-medium">{normalizeCategory(post.data.categories?.[0])}</span>
+    <time datetime={isoDay(post.data.date)}>{isoDay(post.data.date)}</time>
+  </div>
+  <h3 class="text-base font-bold text-[var(--text-high)] group-hover:text-sky-400 transition-colors mb-2">{post.data.title}</h3>
+  <p class="text-sm text-[var(--text-body)] leading-relaxed line-clamp-2">{postDescription(post)}</p>
+</a>

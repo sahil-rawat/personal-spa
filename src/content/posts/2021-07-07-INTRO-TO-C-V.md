@@ -2,9 +2,10 @@
 title: "Intro To C : Part V (Functions)"
 date: 2021-07-07 13:39:50 +0530
 categories: [Languages,C]
+series: "Intro to C"
 tags: [Languages]
 ---
-![](https://github.com/sahil-rawat/assets/blob/master/IMG/MAIN3.jpg?raw=true)
+![Intro To C : Part V (Functions) — figure 1](/assets/img/posts/MAIN3.jpg)
 
 This is the fifth post in the series [Intro To C](https://www.sahilsinghrawat.com/posts/INTRO-TO-C-I/) In the last post we learned about Flow Control Statements
 

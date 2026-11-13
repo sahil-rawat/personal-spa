@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getPosts, allTags, slugify } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return allTags(posts).map(({ tag, slug }) => ({
+    params: { tag: slug },
+    props: { tag, posts: posts.filter((p) => p.data.tags.some((t) => slugify(t) === slug)) },
+  }));
+}
+
+const { tag, posts } = Astro.props;
+---
+
+<BaseLayout title={`#${tag} — Sahil Singh Rawat`} description={`${posts.length} article${posts.length === 1 ? '' : 's'} tagged ${tag}.`}>
+  <SiteHeader active="tags" />
+  <main id="main" class="max-w-3xl mx-auto px-6 py-16 space-y-8">
+    <div>
+      <a href="/tags/" class="text-xs font-mono text-[var(--text-muted)] hover:text-sky-400">← all tags</a>
+      <h1 class="text-3xl font-extrabold tracking-tight mt-2">#{tag}</h1>
+      <p class="text-sm text-[var(--text-muted)] mt-1">{posts.length} article{posts.length === 1 ? '' : 's'}</p>
+    </div>
+    <div class="space-y-3">
+      {posts.map((p) => <PostCard post={p} />)}
+    </div>
+  </main>
+  <SiteFooter />
+</BaseLayout>

@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import { getPosts, allSeries, seriesParts, slugify, postUrl, isoDay } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return allSeries(posts).map((name) => ({
+    params: { series: slugify(name) },
+    props: { name, parts: seriesParts(posts, name) },
+  }));
+}
+
+const { name, parts } = Astro.props;
+---
+
+<BaseLayout title={`${name} — Sahil Singh Rawat`} description={`${parts.length}-part series: ${parts[0].data.title} and more.`}>
+  <SiteHeader active="articles" />
+  <main id="main" class="max-w-3xl mx-auto px-6 py-16 space-y-8">
+    <div>
+      <a href="/articles/" class="text-xs font-mono text-[var(--text-muted)] hover:text-sky-400">← all articles</a>
+      <p class="text-xs font-mono text-sky-400 mt-4">SERIES · {parts.length} parts</p>
+      <h1 class="text-3xl font-extrabold tracking-tight mt-1">{name}</h1>
+    </div>
+    <ol class="space-y-3">
+      {parts.map((p, i) => (
+        <li>
+          <a href={postUrl(p)} class="panel flex gap-4 items-baseline p-4 rounded-lg group">
+            <span class="font-mono text-xs text-sky-400 shrink-0 w-12">Part {i + 1}</span>
+            <span class="min-w-0 flex-1 font-medium text-[var(--text-high)] group-hover:text-sky-400 transition-colors">{p.data.title}</span>
+            <time datetime={isoDay(p.data.date)} class="hidden sm:block text-xs font-mono text-[var(--text-muted)]">{isoDay(p.data.date)}</time>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </main>
+  <SiteFooter />
+</BaseLayout>

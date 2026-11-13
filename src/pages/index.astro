@@ -1,50 +1,55 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ThemeToggle from '../components/ThemeToggle.astro';
-import { getCollection } from 'astro:content';
-import { normalizeCategory, postSlug, postDescription } from '../lib/posts';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import {
+  getPosts, normalizeCategory, postSlug, postDescription, isoDay, slugify, seriesParts,
+} from '../lib/posts';
 
-const allPosts = await getCollection('posts');
-const sortedPosts = allPosts
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-  .map((p) => ({
-    title: p.data.title,
-    date: p.data.date.toISOString().split('T')[0],
-    slug: postSlug(p.id),
-    summary: postDescription(p),
-    tags: p.data.tags || [],
-    category: normalizeCategory(p.data.categories?.[0]),
-    featured: p.data.featured || false,
-  }));
+const allPosts = await getPosts();
 
-// Isolate pinned posts (or fall back to the first 2 newest posts if none are pinned)
-const featuredPosts = sortedPosts.filter((p) => p.featured);
-const displayFeatured = featuredPosts.length > 0 ? featuredPosts : sortedPosts.slice(0, 2);
+const toItem = (p: (typeof allPosts)[number]) => ({
+  title: p.data.title,
+  date: isoDay(p.data.date),
+  href: `/posts/${postSlug(p.id)}/`,
+  summary: postDescription(p),
+  tags: p.data.tags,
+  category: normalizeCategory(p.data.categories?.[0]),
+  featured: p.data.featured,
+});
 
-const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
+// Collapse each series into one card (placed at its newest part's position).
+const seen = new Set<string>();
+const feed: (ReturnType<typeof toItem> & { series: null | { name: string; parts: number }; searchText: string })[] = [];
+for (const p of allPosts) {
+  const series = p.data.series;
+  if (!series) {
+    feed.push({ ...toItem(p), series: null, searchText: '' });
+  } else if (!seen.has(series)) {
+    seen.add(series);
+    const parts = seriesParts(allPosts, series);
+    feed.push({
+      ...toItem(p),
+      title: series,
+      href: `/series/${slugify(series)}/`,
+      summary: `A ${parts.length}-part series. Starts with "${parts[0].data.title}".`,
+      tags: [...new Set(parts.flatMap((x) => x.data.tags))],
+      series: { name: series, parts: parts.length },
+      searchText: parts.map((x) => x.data.title).join(' '),
+    });
+  }
+}
+
+const featuredPosts = allPosts.filter((p) => p.data.featured).map(toItem);
+const displayFeatured = featuredPosts.length > 0 ? featuredPosts : allPosts.slice(0, 2).map(toItem);
+
+const categories = ['All', ...new Set(feed.map((p) => p.category))];
 ---
-
 <BaseLayout title="Sahil Singh Rawat — Software Architect & Security Researcher">
 
   <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[260px] bg-sky-500/10 blur-[120px] pointer-events-none -z-10"></div>
 
-  <!-- Header -->
-  <header class="border-b border-[var(--border)] bg-[var(--bg-canvas)]/80 backdrop-blur-md sticky top-0 z-50">
-    <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-      <a href="/" class="flex items-center gap-2 font-mono text-sm font-semibold tracking-tight text-[var(--text-high)] group">
-        <span class="w-2.5 h-2.5 rounded-sm bg-sky-400 group-hover:rotate-45 transition-transform"></span>
-        sahilsinghrawat.com
-      </a>
-      <nav aria-label="Primary" class="flex items-center gap-4 sm:gap-6 text-xs font-mono text-[var(--text-muted)]">
-        <a href="#about" class="hidden sm:inline hover:text-[var(--text-high)] transition-colors">/about</a>
-        <a href="#architecture" class="hidden sm:inline hover:text-[var(--text-high)] transition-colors">/architecture</a>
-        <a href="/rss.xml" class="hidden sm:inline hover:text-[var(--text-high)] transition-colors">/rss</a>
-        <a href="#articles" class="text-sky-400 hover:text-sky-300 transition-colors font-medium">/articles</a>
-        <a href="https://github.com/sahil-rawat" target="_blank" rel="noreferrer" class="hidden sm:inline hover:text-[var(--text-high)] transition-colors">/github</a>
-        <ThemeToggle />
-      </nav>
-    </div>
-  </header>
+  <SiteHeader active="home" />
 
   <main id="main" class="max-w-5xl mx-auto px-6 py-16 space-y-20">
     <!-- Hero Section -->
@@ -64,8 +69,8 @@ const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
       </div>
 
       <div class="pt-2">
-        <a href="#articles" class="inline-flex items-center px-4 py-2 rounded-md bg-[var(--text-high)] text-[var(--bg-canvas)] font-semibold text-xs hover:opacity-90 transition-opacity">
-          View All {sortedPosts.length} Articles →
+        <a href="/articles/" class="inline-flex items-center px-4 py-2 rounded-md bg-[var(--text-high)] text-[var(--bg-canvas)] font-semibold text-xs hover:opacity-90 transition-opacity">
+          View All {allPosts.length} Articles →
         </a>
       </div>
     </section>
@@ -116,7 +121,7 @@ const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         {displayFeatured.map((post) => (
           <a
-            href={`/posts/${post.slug}/`}
+            href={post.href}
             class="panel p-6 rounded-lg group border-sky-500/20 hover:border-sky-500/50 flex flex-col justify-between"
           >
             <div class="space-y-2">
@@ -145,7 +150,7 @@ const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[var(--border)] pb-4">
         <div>
           <h2 class="text-lg font-bold text-[var(--text-high)] tracking-tight">All Technical Articles</h2>
-          <p class="text-xs text-[var(--text-muted)] mt-0.5">Deep-dives, architecture blueprints, and exploit walkthroughs.</p>
+          <p class="text-xs text-[var(--text-muted)] mt-0.5">Deep-dives, architecture blueprints, and exploit walkthroughs. <a href="/articles/" class="text-sky-400 hover:underline">Full archive →</a></p>
         </div>
 
         <!-- Search Bar -->
@@ -165,6 +170,7 @@ const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
           <button
             type="button"
             data-category={cat}
+            aria-pressed={idx === 0}
             class={`category-btn px-3 py-1 rounded-md text-xs font-mono border transition-all ${
               idx === 0
                 ? 'bg-sky-500/10 border-sky-500/40 text-sky-400 font-semibold'
@@ -174,28 +180,28 @@ const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
             {cat}
           </button>
         ))}
-        <span id="article-count" class="ml-auto text-xs font-mono text-[var(--text-muted)]">
-          Showing {sortedPosts.length} of {sortedPosts.length}
+        <span id="article-count" aria-live="polite" class="ml-auto text-xs font-mono text-[var(--text-muted)]">
+          Showing {feed.length} of {feed.length}
         </span>
       </div>
 
       <!-- Articles Grid -->
       <div id="articles-container" class="space-y-3">
-        {sortedPosts.map((post) => (
+        {feed.map((post) => (
           <article
-            class="article-item panel p-5 rounded-lg group"
+            class="article-item panel relative p-5 rounded-lg group"
             data-title={post.title.toLowerCase()}
-            data-summary={post.summary.toLowerCase()}
+            data-summary={(post.summary + " " + post.searchText).toLowerCase()}
             data-category={post.category}
             data-tags={post.tags.join(',').toLowerCase()}
           >
             <div class="flex flex-col sm:flex-row sm:items-center justify-between text-xs font-mono text-[var(--text-muted)] mb-2 gap-1">
-              <span class="text-sky-400 font-medium">{post.category}</span>
-              <span>{post.date}</span>
+              <span class="text-sky-400 font-medium">{post.category}{post.series && ` · Series · ${post.series.parts} parts`}</span>
+              <time datetime={post.date}>{post.date}</time>
             </div>
 
             <h3 class="text-base font-bold text-[var(--text-high)] group-hover:text-sky-400 transition-colors mb-2">
-              <a href={`/posts/${post.slug}/`}>
+              <a href={post.href} class="after:absolute after:inset-0">
                 {post.title}
               </a>
             </h3>
@@ -209,7 +215,7 @@ const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
                 <button
                   type="button"
                   data-tag={tag.toLowerCase()}
-                  class="tag-btn text-[11px] font-mono text-[var(--text-muted)] hover:text-sky-400 bg-[var(--bg-canvas)] border border-[var(--border)] px-2 py-0.5 rounded transition-colors"
+                  class="tag-btn relative z-10 text-[11px] font-mono text-[var(--text-muted)] hover:text-sky-400 bg-[var(--bg-canvas)] border border-[var(--border)] px-2 py-0.5 rounded transition-colors"
                 >
                   #{tag}
                 </button>
@@ -229,16 +235,7 @@ const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
     </section>
   </main>
 
-  <footer class="border-t border-[var(--border)] py-12 text-xs font-mono text-[var(--text-muted)] mt-24">
-    <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <p>© {new Date().getFullYear()} Sahil Singh Rawat. All rights reserved.</p>
-      <div class="flex items-center gap-6">
-        <a href="https://github.com/sahil-rawat" target="_blank" rel="noreferrer" class="hover:text-[var(--text-high)] transition-colors">GitHub</a>
-        <a href="https://twitter.com/sahil_s_rawat" target="_blank" rel="noreferrer" class="hover:text-[var(--text-high)] transition-colors">Twitter</a>
-        <a href="mailto:contact@sahilsinghrawat.com" class="hover:text-[var(--text-high)] transition-colors">Contact</a>
-      </div>
-    </div>
-  </footer>
+  <SiteFooter />
 
   <script is:inline>
     const searchInput = document.getElementById('search-input');
@@ -293,9 +290,9 @@ const categories = ['All', ...new Set(sortedPosts.map((p) => p.category))];
       btn.addEventListener('click', () => {
         activeCategory = btn.getAttribute('data-category');
         categoryButtons.forEach((b) => {
-          b.className = 'category-btn px-3 py-1 rounded-md text-xs font-mono border transition-all bg-[var(--bg-surface)] border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text-high)] hover:border-[var(--border-hover)]';
+          b.setAttribute('aria-pressed','false'); b.className = 'category-btn px-3 py-1 rounded-md text-xs font-mono border transition-all bg-[var(--bg-surface)] border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text-high)] hover:border-[var(--border-hover)]';
         });
-        btn.className = 'category-btn px-3 py-1 rounded-md text-xs font-mono border transition-all bg-sky-500/10 border-sky-500/40 text-sky-400 font-semibold';
+        btn.setAttribute('aria-pressed','true'); btn.className = 'category-btn px-3 py-1 rounded-md text-xs font-mono border transition-all bg-sky-500/10 border-sky-500/40 text-sky-400 font-semibold';
         filterArticles();
       });
     });

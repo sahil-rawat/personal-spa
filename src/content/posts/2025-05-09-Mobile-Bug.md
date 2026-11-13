@@ -2,9 +2,10 @@
 title: Mobile App Security Testing - A Beginner-Friendly Guide 
 date: 2025-05-09 08:34:00 +0530
 categories: [BugBounty,mobile]
+series: "Mobile Bug Bounty"
 tags: [mobile]
 ---
-![](https://github.com/sahil-rawat/assets/blob/master/IMG/MOBILE1.jpg?raw=true)
+![Mobile App Security Testing - A Beginner-Friendly Guide — figure 1](/assets/img/posts/MOBILE1.jpg)
 
 
 

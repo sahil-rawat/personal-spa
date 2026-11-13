@@ -2,9 +2,10 @@
 title: Gaining Access:Part I
 date: 2022-01-01 11:14:00 +0530
 categories: [Penetration Testing,Access]
+series: "Gaining Access"
 tags: [networking]
 ---
-![](https://github.com/sahil-rawat/assets/blob/master/IMG/GAIN_ACCESS1.jpg?raw=true)
+![Gaining Access:Part I — figure 1](/assets/img/posts/GAIN_ACCESS1.jpg)
 
 
 # Gaining Access

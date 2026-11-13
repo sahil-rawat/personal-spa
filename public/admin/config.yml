@@ -40,6 +40,9 @@ collections:
           - Research
           - Intro
         hint: "The first one is the primary category used for filtering."
+      - { label: Series, name: series, widget: string, required: false, hint: "Exact series name (e.g. Intro to C) to group multi-part posts. Leave empty for standalone posts." }
       - { label: Tags, name: tags, widget: list, required: false }
+      - { label: Updated, name: updated, widget: datetime, required: false, format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false, hint: "Set when you revise a published post." }
+      - { label: Draft, name: draft, widget: boolean, default: false, hint: "Drafts are hidden on the live site (but visible in local dev)." }
       - { label: Featured, name: featured, widget: boolean, default: false, hint: "Pin to the homepage (if none are featured, the 2 newest show)." }
       - { label: Body, name: body, widget: markdown }

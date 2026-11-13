@@ -2,9 +2,10 @@
 title: "Intro To C : Part X (Files In C)"
 date: 2021-07-12 13:39:50 +0530
 categories: [Languages,C]
+series: "Intro to C"
 tags: [Languages]
 ---
-![](https://github.com/sahil-rawat/assets/blob/master/IMG/MAIN9.jpg?raw=true)
+![Intro To C : Part X (Files In C) — figure 1](/assets/img/posts/MAIN9.jpg)
 
 This is the tenth post in the series [Intro To C](https://www.sahilsinghrawat.com/posts/INTRO-TO-C-I/) In the last post we learned Structs
 

@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import { getPosts, allTags } from '../../lib/posts';
+
+const tags = allTags(await getPosts());
+---
+
+<BaseLayout title="Tags — Sahil Singh Rawat" description="Browse articles by topic.">
+  <SiteHeader active="tags" />
+  <main id="main" class="max-w-3xl mx-auto px-6 py-16 space-y-8">
+    <h1 class="text-3xl font-extrabold tracking-tight">Tags</h1>
+    <ul class="flex flex-wrap gap-2">
+      {tags.map((t) => (
+        <li>
+          <a href={`/tags/${t.slug}/`} class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-[var(--border)] bg-[var(--bg-surface)] hover:border-sky-400 hover:text-sky-400 text-sm font-mono transition-colors">
+            #{t.tag} <span class="text-xs text-[var(--text-muted)]">{t.count}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </main>
+  <SiteFooter />
+</BaseLayout>

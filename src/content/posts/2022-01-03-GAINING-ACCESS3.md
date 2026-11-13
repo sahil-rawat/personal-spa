@@ -2,9 +2,10 @@
 title: Gaining Access:Part III
 date: 2022-01-03 05:27:00 +0530
 categories: [Penetration Testing,Access]
+series: "Gaining Access"
 tags: [networking]
 ---
-![](https://github.com/sahil-rawat/assets/blob/master/IMG/GAIN_ACCESS3.jpg?raw=true)
+![Gaining Access:Part III — figure 1](/assets/img/posts/GAIN_ACCESS3.jpg)
 
 This is the Third Article in Gaining Access Series where we will see how we can perform the attacks we discussed in last two posts Over the internet
 

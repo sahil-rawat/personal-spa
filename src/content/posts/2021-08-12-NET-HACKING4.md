@@ -2,9 +2,10 @@
 title: Network Hacking:Part IV 
 date: 2021-08-12 19:39:50 +0530
 categories: [Penetration Testing,Networking]
+series: "Network Hacking"
 tags: [networking]
 ---
-![](https://github.com/sahil-rawat/assets/blob/master/IMG/MAIN5.jpg?raw=true)
+![Network Hacking:Part IV — figure 1](/assets/img/posts/MAIN5.jpg)
 
 This is the last post in our Network Hacking series, Here we would be learning about attacks on the router, changing the settings of the router, etc.
 
