@@ -1,5 +1,6 @@
 ---
 import ThemeToggle from './ThemeToggle.astro';
+import AccentPicker from './AccentPicker.astro';
 const { active = '' } = Astro.props;
 const link = (name: string) =>
   `transition-colors ${active === name ? 'text-sky-400 font-medium' : 'hover:text-[var(--text-high)]'}`;
@@ -18,6 +19,8 @@ const link = (name: string) =>
       <a href="/tags/" class:list={[link('tags'), 'hidden sm:inline']}>/tags</a>
       <a href="/search/" class={link('search')}>/search</a>
       <a href="https://github.com/sahil-rawat" target="_blank" rel="noreferrer" class="hidden md:inline hover:text-[var(--text-high)] transition-colors">/github</a>
+      <button type="button" data-open-palette aria-label="Open command palette" class="hidden md:inline-flex items-center gap-1 h-8 px-2 rounded-md border border-[var(--border)] bg-[var(--bg-surface)] hover:border-[var(--border-hover)] hover:text-[var(--text-high)] transition-colors">⌘K</button>
+      <AccentPicker />
       <ThemeToggle />
     </nav>
   </div>

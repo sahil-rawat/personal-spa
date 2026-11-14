@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import CommandPalette from '../components/CommandPalette.astro';
 
 interface Props {
   title: string;
@@ -64,10 +65,19 @@ const imageUrl = new URL(image, siteUrl).href;
     } else {
       document.documentElement.classList.remove('light');
     }
+    try {
+      const r = document.documentElement;
+      const a = localStorage.getItem('accent');
+      if (a && a !== 'sky') r.setAttribute('data-accent', a);
+      const fs = localStorage.getItem('reader-fs');
+      if (fs) r.setAttribute('data-fs', fs);
+      if (localStorage.getItem('reader-wide') === '1') r.setAttribute('data-wide', '');
+    } catch (e) {}
   </script>
 </head>
 <body class="min-h-screen bg-[var(--bg-canvas)] text-[var(--text-high)] antialiased">
   <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[200] focus:px-3 focus:py-2 focus:rounded-md focus:bg-[var(--text-high)] focus:text-[var(--bg-canvas)] text-xs font-mono">Skip to content</a>
   <slot />
+  <CommandPalette />
 </body>
 </html>

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ThemeToggle from '../../components/ThemeToggle.astro';
+import AccentPicker from '../../components/AccentPicker.astro';
 import { render } from 'astro:content';
 import {
   getPosts, normalizeCategory, postSlug, postDescription, postUrl, isoDay, slugify, seriesParts, relatedPosts,
@@ -29,6 +30,9 @@ const prev = series ? parts[partIndex - 1] : allPosts[allPosts.findIndex((p) => 
 const next = series ? parts[partIndex + 1] : allPosts[allPosts.findIndex((p) => p.id === post.id) - 1];
 const related = relatedPosts(post, allPosts);
 const slug = postSlug(post.id);
+const lastTouched = post.data.updated ?? post.data.date;
+const ageYears = (Date.now() - lastTouched.getTime()) / (365.25 * 24 * 3600 * 1000);
+const outdated = ageYears >= 2;
 const readingTime = remarkPluginFrontmatter?.readingTime || '4 min read';
 ---
 
@@ -47,6 +51,13 @@ const readingTime = remarkPluginFrontmatter?.readingTime || '4 min read';
         <span class="text-[var(--text-muted)]">
           <time datetime={isoDay(post.data.date)}>{isoDay(post.data.date)}</time> · {readingTime}
         </span>
+        <div class="hidden sm:flex items-center gap-1" role="group" aria-label="Reading preferences">
+          <button type="button" id="fs-down" aria-label="Smaller text" class="h-8 w-8 rounded-md border border-[var(--border)] bg-[var(--bg-surface)] hover:border-[var(--border-hover)] hover:text-[var(--text-high)] text-[var(--text-muted)]">A−</button>
+          <button type="button" id="fs-up" aria-label="Larger text" class="h-8 w-8 rounded-md border border-[var(--border)] bg-[var(--bg-surface)] hover:border-[var(--border-hover)] hover:text-[var(--text-high)] text-[var(--text-muted)]">A+</button>
+          <button type="button" id="wide-toggle" aria-label="Toggle wide layout" aria-pressed="false" class="hidden lg:block h-8 w-8 rounded-md border border-[var(--border)] bg-[var(--bg-surface)] hover:border-[var(--border-hover)] hover:text-[var(--text-high)] text-[var(--text-muted)]">↔</button>
+        </div>
+        <button type="button" data-open-palette aria-label="Open command palette" class="hidden md:inline-flex items-center h-8 px-2 rounded-md border border-[var(--border)] bg-[var(--bg-surface)] hover:text-[var(--text-high)] text-[var(--text-muted)]">⌘K</button>
+        <AccentPicker />
         <ThemeToggle />
       </div>
     </div>
@@ -55,7 +66,7 @@ const readingTime = remarkPluginFrontmatter?.readingTime || '4 min read';
   <!-- Main Grid with Sticky TOC -->
   <div class="max-w-6xl mx-auto px-6 py-16 sm:py-20 lg:grid lg:grid-cols-[minmax(0,1fr)_250px] lg:gap-14">
     <!-- Main Article Column -->
-    <main id="main" class="min-w-0 max-w-3xl">
+    <main id="main" class="post-main min-w-0 max-w-3xl">
       <header class="mb-14 pb-10 border-b border-[var(--border)] space-y-5">
         <div class="flex items-center gap-3 text-xs font-mono">
           <span class="text-sky-400 font-semibold uppercase tracking-wider">
@@ -89,8 +100,18 @@ const readingTime = remarkPluginFrontmatter?.readingTime || '4 min read';
         </div>
       </header>
 
+      {outdated && (
+        <div class="outdated-notice" role="note">
+          <span aria-hidden="true">⚠</span>
+          <p>
+            This post was {post.data.updated ? 'last updated' : 'written'} in {lastTouched.getFullYear()}.
+            Tools, versions and techniques may have changed since, so double-check before relying on it.
+          </p>
+        </div>
+      )}
+
       <!-- Content -->
-      <article data-pagefind-body class="article-content max-w-none text-[17px] sm:text-[18px] text-[var(--text-body)] leading-[1.85]">
+      <article data-pagefind-body data-slug={slug} class="article-content max-w-none text-[17px] sm:text-[18px] text-[var(--text-body)] leading-[1.85]">
         <Content />
       </article>
 
@@ -204,74 +225,126 @@ const readingTime = remarkPluginFrontmatter?.readingTime || '4 min read';
     )}
   </div>
 
-  <!-- Client Script: Scroll Progress + Copy Code Buttons -->
   <script is:inline>
-    // 1. Reading Progress Bar
-    const progressBar = document.getElementById('scroll-progress');
-    window.addEventListener('scroll', () => {
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-      if (totalHeight > 0) {
-        const progress = (window.scrollY / totalHeight) * 100;
-        progressBar.style.width = progress + '%';
+    (function () {
+      const article = document.querySelector('.article-content');
+
+      // Reading progress + mark-as-read (series tracker)
+      const progressBar = document.getElementById('scroll-progress');
+      let marked = false;
+      function markRead() {
+        try {
+          const key = 'read-posts';
+          const list = JSON.parse(localStorage.getItem(key) || '[]');
+          const slug = article && article.dataset.slug;
+          if (slug && !list.includes(slug)) {
+            list.push(slug);
+            localStorage.setItem(key, JSON.stringify(list));
+          }
+        } catch (e) {}
       }
-    }, { passive: true });
+      window.addEventListener('scroll', () => {
+        const total = document.documentElement.scrollHeight - window.innerHeight;
+        if (total <= 0) return;
+        const p = window.scrollY / total;
+        progressBar.style.width = p * 100 + '%';
+        if (!marked && p >= 0.8) { marked = true; markRead(); }
+      }, { passive: true });
 
-    // Lazy-load article images
-    document.querySelectorAll('.article-content img').forEach((img) => {
-      img.loading = 'lazy';
-      img.decoding = 'async';
-    });
-
-    // TOC scrollspy
-    const tocLinks = [...document.querySelectorAll('.toc-link')];
-    if (tocLinks.length && 'IntersectionObserver' in window) {
-      const map = new Map(tocLinks.map((a) => [a.dataset.toc, a]));
-      const heads = [...map.keys()].map((id) => document.getElementById(id)).filter(Boolean);
-      const spy = new IntersectionObserver((entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
+      // TOC scrollspy
+      const tocLinks = [...document.querySelectorAll('.toc-link')];
+      if (tocLinks.length && 'IntersectionObserver' in window) {
+        const map = new Map(tocLinks.map((a) => [a.dataset.toc, a]));
+        const spy = new IntersectionObserver((entries) => {
+          entries.forEach((e) => {
+            if (!e.isIntersecting) return;
             tocLinks.forEach((a) => { a.classList.remove('toc-active'); a.removeAttribute('aria-current'); });
             const a = map.get(e.target.id);
-            a?.classList.add('toc-active');
-            a?.setAttribute('aria-current', 'true');
-          }
+            if (a) { a.classList.add('toc-active'); a.setAttribute('aria-current', 'true'); }
+          });
+        }, { rootMargin: '-80px 0px -70% 0px' });
+        [...map.keys()].map((id) => document.getElementById(id)).filter(Boolean).forEach((h) => spy.observe(h));
+      }
+
+      // Reader preferences: text size + wide layout
+      const root = document.documentElement;
+      const sizes = ['-1', '0', '1', '2'];
+      const curSize = () => root.getAttribute('data-fs') || '0';
+      function setSize(v) {
+        if (v === '0') root.removeAttribute('data-fs'); else root.setAttribute('data-fs', v);
+        try { localStorage.setItem('reader-fs', v === '0' ? '' : v); } catch (e) {}
+      }
+      document.getElementById('fs-down')?.addEventListener('click', () => setSize(sizes[Math.max(0, sizes.indexOf(curSize()) - 1)]));
+      document.getElementById('fs-up')?.addEventListener('click', () => setSize(sizes[Math.min(sizes.length - 1, sizes.indexOf(curSize()) + 1)]));
+      const wideBtn = document.getElementById('wide-toggle');
+      const syncWide = () => wideBtn && wideBtn.setAttribute('aria-pressed', String(root.hasAttribute('data-wide')));
+      wideBtn?.addEventListener('click', () => {
+        const on = !root.hasAttribute('data-wide');
+        if (on) root.setAttribute('data-wide', ''); else root.removeAttribute('data-wide');
+        try { localStorage.setItem('reader-wide', on ? '1' : '0'); } catch (e) {}
+        syncWide();
+      });
+      syncWide();
+
+      // Code blocks: header with label + copy, collapse long blocks
+      document.querySelectorAll('pre.astro-code').forEach((pre) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'code-block';
+        pre.parentNode.insertBefore(wrap, pre);
+
+        const head = document.createElement('div');
+        head.className = 'code-head';
+        const label = document.createElement('span');
+        const title = pre.getAttribute('data-title');
+        const lang = pre.getAttribute('data-lang');
+        label.className = 'code-label' + (title ? ' is-title' : '');
+        label.textContent = title || (lang && !['text', 'plaintext', 'txt'].includes(lang) ? lang : 'code');
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = 'Copy';
+        btn.setAttribute('aria-label', 'Copy code to clipboard');
+        head.append(label, btn);
+        wrap.append(head, pre);
+
+        btn.addEventListener('click', async () => {
+          const code = (pre.querySelector('code') || pre).innerText;
+          try {
+            await navigator.clipboard.writeText(code);
+            btn.textContent = 'Copied!';
+          } catch (e) { btn.textContent = 'Failed'; }
+          setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
         });
-      }, { rootMargin: '-80px 0px -70% 0px' });
-      heads.forEach((h) => spy.observe(h));
-    }
 
-    // 2. Add Copy Button to all <pre> blocks
-    const codeBlocks = document.querySelectorAll('pre.astro-code');
-    codeBlocks.forEach((pre) => {
-      const container = document.createElement('div');
-      container.className = 'relative group';
-
-      pre.parentNode.insertBefore(container, pre);
-      container.appendChild(pre);
-
-      const copyBtn = document.createElement('button');
-      copyBtn.className =
-        'absolute top-3 right-3 px-2.5 py-1 rounded text-xs font-mono bg-[var(--bg-surface)] border border-[var(--border)] text-[var(--text-muted)] opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 transition-all hover:text-[var(--text-high)] hover:border-[var(--border-hover)]';
-      copyBtn.innerText = 'Copy';
-      copyBtn.type = 'button';
-      copyBtn.setAttribute('aria-label', 'Copy code to clipboard');
-
-      copyBtn.addEventListener('click', async () => {
-        const code = pre.querySelector('code')?.innerText || pre.innerText;
-        try {
-          await navigator.clipboard.writeText(code);
-          copyBtn.innerText = 'Copied!';
-          copyBtn.classList.add('text-sky-400', 'border-sky-500/40');
-          setTimeout(() => {
-            copyBtn.innerText = 'Copy';
-            copyBtn.classList.remove('text-sky-400', 'border-sky-500/40');
-          }, 2000);
-        } catch (err) {
-          copyBtn.innerText = 'Failed';
+        const lines = pre.querySelectorAll('.line').length;
+        if (lines > 30) {
+          wrap.classList.add('collapsed');
+          const more = document.createElement('button');
+          more.type = 'button';
+          more.className = 'code-expand';
+          more.textContent = 'Show all ' + lines + ' lines ↓';
+          more.addEventListener('click', () => { wrap.classList.remove('collapsed'); });
+          wrap.append(more);
         }
       });
 
-      container.appendChild(copyBtn);
-    });
+      // Lazy images + click-to-zoom lightbox
+      const dlg = document.createElement('dialog');
+      dlg.className = 'lightbox';
+      dlg.setAttribute('aria-label', 'Image preview');
+      const big = document.createElement('img');
+      dlg.append(big);
+      document.body.append(dlg);
+      dlg.addEventListener('click', () => dlg.close());
+      document.querySelectorAll('.article-content img').forEach((img) => {
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        if (img.closest('a')) return;
+        img.addEventListener('click', () => {
+          big.src = img.currentSrc || img.src;
+          big.alt = img.alt;
+          dlg.showModal();
+        });
+      });
+    })();
   </script>
 </BaseLayout>

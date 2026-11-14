@@ -43,6 +43,15 @@ for (const p of allPosts) {
 const featuredPosts = allPosts.filter((p) => p.data.featured).map(toItem);
 const displayFeatured = featuredPosts.length > 0 ? featuredPosts : allPosts.slice(0, 2).map(toItem);
 
+const words = allPosts.reduce((n, p) => n + (p.body?.split(/\s+/).length ?? 0), 0);
+const firstYear = Math.min(...allPosts.map((p) => p.data.date.getFullYear()));
+const stats = [
+  { value: String(allPosts.length), label: 'articles' },
+  { value: `${Math.round(words / 1000)}k`, label: 'words written' },
+  { value: String(new Set(allPosts.map((p) => p.data.series).filter(Boolean)).size), label: 'series' },
+  { value: String(new Date().getFullYear() - firstYear + 1), label: `years · since ${firstYear}` },
+];
+
 const categories = ['All', ...new Set(feed.map((p) => p.category))];
 ---
 <BaseLayout title="Sahil Singh Rawat — Software Architect & Security Researcher">
@@ -74,6 +83,16 @@ const categories = ['All', ...new Set(feed.map((p) => p.category))];
         </a>
       </div>
     </section>
+
+    <!-- Stats -->
+    <dl class="grid grid-cols-2 sm:grid-cols-4 gap-3 -mt-10">
+      {stats.map((st) => (
+        <div class="panel rounded-lg px-4 py-3">
+          <dd class="text-2xl font-extrabold tracking-tight text-[var(--text-high)]">{st.value}</dd>
+          <dt class="text-xs font-mono text-[var(--text-muted)]">{st.label}</dt>
+        </div>
+      ))}
+    </dl>
 
     <!-- Architecture, Security & Research Disciplines -->
     <section id="architecture" class="space-y-4">

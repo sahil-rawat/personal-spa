@@ -1,0 +1,48 @@
+---
+const accents = [
+  { id: 'sky', label: 'Sky', color: '#38bdf8' },
+  { id: 'violet', label: 'Violet', color: '#a78bfa' },
+  { id: 'emerald', label: 'Emerald', color: '#34d399' },
+  { id: 'amber', label: 'Amber', color: '#fbbf24' },
+  { id: 'rose', label: 'Rose', color: '#fb7185' },
+];
+---
+
+<details class="accent-picker relative">
+  <summary
+    aria-label="Change accent colour"
+    class="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--border)] bg-[var(--bg-surface)] hover:border-[var(--border-hover)] cursor-pointer list-none transition-colors [&::-webkit-details-marker]:hidden"
+  >
+    <span class="w-3.5 h-3.5 rounded-full" style="background: var(--accent)"></span>
+  </summary>
+  <div class="absolute right-0 mt-2 z-[60] flex gap-2 p-2 rounded-lg border border-[var(--border)] bg-[var(--bg-surface)] shadow-xl">
+    {accents.map((a) => (
+      <button type="button" data-accent-id={a.id} aria-label={a.label} title={a.label}
+        class="w-6 h-6 rounded-full border-2 border-transparent hover:scale-110 transition-transform" style={`background:${a.color}`}></button>
+    ))}
+  </div>
+</details>
+
+<script>
+  const root = document.documentElement;
+  function apply(id: string) {
+    if (id === 'sky') root.removeAttribute('data-accent');
+    else root.setAttribute('data-accent', id);
+    try { localStorage.setItem('accent', id); } catch {}
+    document.querySelectorAll<HTMLButtonElement>('[data-accent-id]').forEach((b) => {
+      b.style.borderColor = b.dataset.accentId === id ? 'var(--text-high)' : 'transparent';
+    });
+  }
+  document.querySelectorAll<HTMLButtonElement>('[data-accent-id]').forEach((b) => {
+    b.addEventListener('click', () => {
+      apply(b.dataset.accentId!);
+      b.closest('details')?.removeAttribute('open');
+    });
+  });
+  document.addEventListener('click', (e) => {
+    document.querySelectorAll('.accent-picker[open]').forEach((d) => {
+      if (!d.contains(e.target as Node)) d.removeAttribute('open');
+    });
+  });
+  apply((() => { try { return localStorage.getItem('accent') || 'sky'; } catch { return 'sky'; } })());
+</script>

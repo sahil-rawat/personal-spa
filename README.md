@@ -30,6 +30,8 @@ updated: 2025-06-01            # optional "Updated" date
 ---
 ```
 
+Markdown extras: callouts (`> [!NOTE]`, `[!TIP]`, `[!IMPORTANT]`, `[!WARNING]`, `[!CAUTION]`), footnotes (`text[^1]`), code titles (```` ```js title="app.js" ````) and line highlights (`// [!code highlight]`).
+
 Images go in `public/assets/img/posts/` and are referenced as `/assets/img/posts/name.jpg`.
 
 You can also write and edit through the browser at **/admin** (Decap CMS). It commits to `main` via GitHub.
