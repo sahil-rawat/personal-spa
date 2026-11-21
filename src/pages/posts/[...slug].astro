@@ -38,66 +38,48 @@ const readingTime = remarkPluginFrontmatter?.readingTime || '4 min read';
 
 <BaseLayout title={`${post.data.title} — Sahil Singh Rawat`} description={postDescription(post)} type="article" publishedTime={post.data.date.toISOString()} image={`/og/${slug}.png`}>
 
-  <!-- Reading Progress Bar -->
-  <div id="scroll-progress" class="fixed top-0 left-0 h-0.5 bg-sky-400 z-[100] w-0 transition-all duration-75 ease-out"></div>
+  <div id="scroll-progress" class="fixed top-0 left-0 h-0.5 z-[100] w-0 transition-all duration-75 ease-out" style="background: var(--accent-fill)"></div>
 
-  <!-- Minimal Nav -->
-  <header class="border-b border-[var(--border)] bg-[var(--bg-canvas)]/80 backdrop-blur-md sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between text-xs font-mono">
-      <a href="/articles/" class="text-[var(--text-muted)] hover:text-[var(--text-high)] flex items-center gap-1.5 transition-colors">
-        ← /articles
-      </a>
-      <div class="flex items-center gap-4">
-        <span class="text-[var(--text-muted)]">
-          <time datetime={isoDay(post.data.date)}>{isoDay(post.data.date)}</time> · {readingTime}
-        </span>
-        <div class="hidden sm:flex items-center gap-1" role="group" aria-label="Reading preferences">
-          <button type="button" id="fs-down" aria-label="Smaller text" class="h-8 w-8 rounded-md border border-[var(--border)] bg-[var(--bg-surface)] hover:border-[var(--border-hover)] hover:text-[var(--text-high)] text-[var(--text-muted)]">A−</button>
-          <button type="button" id="fs-up" aria-label="Larger text" class="h-8 w-8 rounded-md border border-[var(--border)] bg-[var(--bg-surface)] hover:border-[var(--border-hover)] hover:text-[var(--text-high)] text-[var(--text-muted)]">A+</button>
-          <button type="button" id="wide-toggle" aria-label="Toggle wide layout" aria-pressed="false" class="hidden lg:block h-8 w-8 rounded-md border border-[var(--border)] bg-[var(--bg-surface)] hover:border-[var(--border-hover)] hover:text-[var(--text-high)] text-[var(--text-muted)]">↔</button>
+  <header class="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--bg-canvas)]/85 backdrop-blur-md">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between text-sm">
+      <a href="/engineering/" class="text-[var(--text-muted)] hover:text-[var(--text-high)] transition-colors">← Engineering</a>
+      <div class="flex items-center gap-1.5">
+        <div class="hidden sm:flex items-center gap-1.5" role="group" aria-label="Reading preferences">
+          <button type="button" id="fs-down" aria-label="Smaller text" class="icon-btn">A−</button>
+          <button type="button" id="fs-up" aria-label="Larger text" class="icon-btn">A+</button>
+          <button type="button" id="wide-toggle" aria-label="Toggle wide layout" aria-pressed="false" class="icon-btn hidden lg:inline-flex">↔</button>
         </div>
-        <button type="button" data-open-palette aria-label="Open command palette" class="hidden md:inline-flex items-center h-8 px-2 rounded-md border border-[var(--border)] bg-[var(--bg-surface)] hover:text-[var(--text-high)] text-[var(--text-muted)]">⌘K</button>
+        <button type="button" data-open-palette aria-label="Open command palette" class="icon-btn hidden md:inline-flex">⌘K</button>
         <AccentPicker />
         <ThemeToggle />
       </div>
     </div>
   </header>
 
-  <!-- Main Grid with Sticky TOC -->
-  <div class="max-w-6xl mx-auto px-6 py-16 sm:py-20 lg:grid lg:grid-cols-[minmax(0,1fr)_250px] lg:gap-14">
-    <!-- Main Article Column -->
-    <main id="main" class="post-main min-w-0 max-w-3xl">
-      <header class="mb-14 pb-10 border-b border-[var(--border)] space-y-5">
-        <div class="flex items-center gap-3 text-xs font-mono">
-          <span class="text-sky-400 font-semibold uppercase tracking-wider">
-            {category}
-          </span>
-          <span class="text-[var(--border)]">/</span>
-          <span class="text-[var(--text-muted)]">{readingTime}</span>
-          {post.data.updated && (
-            <>
-              <span class="text-[var(--border)]">/</span>
-              <span class="text-[var(--text-muted)]">Updated <time datetime={isoDay(post.data.updated)}>{isoDay(post.data.updated)}</time></span>
-            </>
-          )}
-        </div>
-
+  <div class="max-w-6xl mx-auto px-6 pt-14 sm:pt-20 lg:grid lg:grid-cols-[minmax(0,1fr)_230px] lg:gap-16">
+    <main id="main" class="post-main min-w-0 max-w-[44rem]">
+      <header class="mb-12 pb-10 border-b border-[var(--border)] space-y-5">
+        <p class="label flex flex-wrap items-center gap-x-2">
+          <span>{category}</span><span aria-hidden="true">·</span>
+          <time datetime={isoDay(post.data.date)}>{isoDay(post.data.date)}</time><span aria-hidden="true">·</span>
+          <span>{readingTime}</span>
+          {post.data.updated && (<><span aria-hidden="true">·</span><span>Updated <time datetime={isoDay(post.data.updated)}>{isoDay(post.data.updated)}</time></span></>)}
+        </p>
         {series && (
-          <a href={`/series/${slugify(series)}/`} class="inline-block text-xs font-mono text-sky-400 hover:underline">
-            ◆ {series} — Part {partIndex + 1} of {parts.length}
+          <a href={`/series/${slugify(series)}/`} class="inline-block text-sm text-[var(--text-high)] border-b border-[var(--border-hover)] hover:border-[var(--text-high)]">
+            {series} · Part {partIndex + 1} of {parts.length}
           </a>
         )}
-        <h1 class="text-3xl sm:text-5xl font-extrabold text-[var(--text-high)] tracking-tight leading-[1.2]">
+        <h1 class="text-[2rem] sm:text-[2.8rem] font-medium tracking-[-0.035em] leading-[1.08] text-[var(--text-high)]">
           {post.data.title}
         </h1>
-
-        <div class="flex flex-wrap gap-2 pt-2">
-          {post.data.tags.map((tag: string) => (
-            <a href={`/tags/${slugify(tag)}/`} class="text-xs font-mono text-[var(--text-muted)] bg-[var(--bg-surface)] border border-[var(--border)] hover:border-sky-400 hover:text-sky-400 px-2.5 py-1 rounded transition-colors">
-              #{tag}
-            </a>
-          ))}
-        </div>
+        {post.data.tags.length > 0 && (
+          <div class="flex flex-wrap gap-x-4 gap-y-1 pt-1">
+            {post.data.tags.map((tag: string) => (
+              <a href={`/tags/${slugify(tag)}/`} class="tag-link">#{tag}</a>
+            ))}
+          </div>
+        )}
       </header>
 
       {outdated && (
@@ -110,24 +92,22 @@ const readingTime = remarkPluginFrontmatter?.readingTime || '4 min read';
         </div>
       )}
 
-      <!-- Content -->
-      <article data-pagefind-body data-slug={slug} class="article-content max-w-none text-[17px] sm:text-[18px] text-[var(--text-body)] leading-[1.85]">
+      <article data-pagefind-body data-slug={slug} class="article-content max-w-none text-[17px] sm:text-[18px] text-[var(--text-body)] leading-[1.8]">
         <Content />
       </article>
 
-      <!-- Prev / Next -->
       {(prev || next) && (
-        <nav aria-label={series ? 'Series navigation' : 'More articles'} class="mt-14 grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <nav aria-label={series ? 'Series navigation' : 'More posts'} class="mt-16 grid grid-cols-1 sm:grid-cols-2 gap-3">
           {prev ? (
-            <a href={postUrl(prev)} class="panel p-4 rounded-lg group">
-              <span class="text-xs font-mono text-[var(--text-muted)]">← {series ? 'Previous part' : 'Older'}</span>
-              <span class="block mt-1 text-sm font-semibold text-[var(--text-high)] group-hover:text-sky-400 transition-colors">{prev.data.title}</span>
+            <a href={postUrl(prev)} class="panel p-4 rounded-lg">
+              <span class="label">← {series ? 'Previous part' : 'Older'}</span>
+              <span class="block mt-1 font-medium text-[var(--text-high)]">{prev.data.title}</span>
             </a>
           ) : <span />}
           {next ? (
-            <a href={postUrl(next)} class="panel p-4 rounded-lg group sm:text-right">
-              <span class="text-xs font-mono text-[var(--text-muted)]">{series ? 'Next part' : 'Newer'} →</span>
-              <span class="block mt-1 text-sm font-semibold text-[var(--text-high)] group-hover:text-sky-400 transition-colors">{next.data.title}</span>
+            <a href={postUrl(next)} class="panel p-4 rounded-lg sm:text-right">
+              <span class="label">{series ? 'Next part' : 'Newer'} →</span>
+              <span class="block mt-1 font-medium text-[var(--text-high)]">{next.data.title}</span>
             </a>
           ) : <span />}
         </nav>
@@ -135,86 +115,38 @@ const readingTime = remarkPluginFrontmatter?.readingTime || '4 min read';
 
       {related.length > 0 && (
         <section class="mt-14" aria-labelledby="related-h">
-          <h2 id="related-h" class="text-xs font-mono uppercase tracking-widest text-[var(--text-muted)] font-bold mb-4">Related articles</h2>
-          <ul class="space-y-2">
+          <h2 id="related-h" class="label mb-3">Related</h2>
+          <div class="rows">
             {related.map((r) => (
-              <li>
-                <a href={postUrl(r)} class="text-sm text-[var(--text-body)] hover:text-sky-400 transition-colors">
-                  {r.data.title} <span class="font-mono text-xs text-[var(--text-muted)]">· {isoDay(r.data.date)}</span>
-                </a>
-              </li>
+              <a href={postUrl(r)} class="row">
+                <div class="row-title !text-base min-w-0">{r.data.title}</div>
+                <time class="row-date" datetime={isoDay(r.data.date)}>{r.data.date.getFullYear()}</time>
+              </a>
             ))}
-          </ul>
+          </div>
         </section>
       )}
 
-      <!-- Author Card -->
-      <section class="mt-16 pt-10 border-t border-[var(--border)]">
-        <div class="panel p-6 sm:p-8 rounded-xl space-y-4">
-          <div>
-            <h3 class="text-base font-bold text-[var(--text-high)]">Thanks for reading!</h3>
-            <p class="text-xs text-[var(--text-muted)] mt-0.5">
-              Follow along for more deep-dives into systems engineering, architecture, and security research.
-            </p>
-          </div>
-
-          <div class="flex flex-wrap gap-2.5 pt-2">
-            <a
-              href="https://twitter.com/sahil_s_rawat"
-              target="_blank"
-              rel="noreferrer"
-              class="px-3 py-1.5 rounded-md border border-[var(--border)] bg-[var(--bg-canvas)] hover:border-sky-400 hover:text-sky-400 text-xs font-mono text-[var(--text-body)] transition-all"
-            >
-              Twitter / X ↗
-            </a>
-            <a
-              href="https://www.linkedin.com/in/sahil-singh-rawat"
-              target="_blank"
-              rel="noreferrer"
-              class="px-3 py-1.5 rounded-md border border-[var(--border)] bg-[var(--bg-canvas)] hover:border-sky-400 hover:text-sky-400 text-xs font-mono text-[var(--text-body)] transition-all"
-            >
-              LinkedIn ↗
-            </a>
-            <a
-              href="https://github.com/sahil-rawat"
-              target="_blank"
-              rel="noreferrer"
-              class="px-3 py-1.5 rounded-md border border-[var(--border)] bg-[var(--bg-canvas)] hover:border-sky-400 hover:text-sky-400 text-xs font-mono text-[var(--text-body)] transition-all"
-            >
-              GitHub ↗
-            </a>
-            <a
-              href="/"
-              class="px-3 py-1.5 rounded-md border border-[var(--border)] bg-[var(--bg-canvas)] hover:border-sky-400 hover:text-sky-400 text-xs font-mono text-[var(--text-body)] transition-all"
-            >
-              Overview / Home ↗
-            </a>
-          </div>
-        </div>
+      <section class="mt-16 pt-8 border-t border-[var(--border)] text-sm text-[var(--text-muted)] flex flex-wrap items-center justify-between gap-4">
+        <p>Thanks for reading. I'm Sahil — <a href="/about/" class="text-[var(--text-high)] border-b border-[var(--text-high)]">more about me</a>.</p>
+        <p class="flex gap-4">
+          <a href="https://twitter.com/sahil_s_rawat" target="_blank" rel="noreferrer" class="hover:text-[var(--text-high)]">Twitter</a>
+          <a href="https://www.linkedin.com/in/sahil-singh-rawat" target="_blank" rel="noreferrer" class="hover:text-[var(--text-high)]">LinkedIn</a>
+          <a href="https://github.com/sahil-rawat" target="_blank" rel="noreferrer" class="hover:text-[var(--text-high)]">GitHub</a>
+        </p>
       </section>
-
-
-      <div class="mt-12 pt-8 border-t border-[var(--border)] flex items-center justify-between text-xs font-mono text-[var(--text-muted)]">
-        <a href="/articles/" class="text-sky-400 hover:underline">← Back to Articles</a>
-        <span>Written by Sahil Singh Rawat</span>
-      </div>
     </main>
 
-    <!-- Sticky Table of Contents Sidebar (Desktop) -->
     {filteredHeadings.length > 0 && (
       <aside class="hidden lg:block">
         <div class="sticky top-24 space-y-3">
-          <h4 class="text-xs font-mono uppercase tracking-widest text-[var(--text-muted)] font-bold">
-            Table of Contents
-          </h4>
-          <nav id="toc" aria-label="Table of contents" class="space-y-1 text-xs font-mono border-l border-[var(--border)]">
+          <h4 class="label">On this page</h4>
+          <nav id="toc" aria-label="Table of contents" class="space-y-1 text-[0.8rem] border-l border-[var(--border)]">
             {filteredHeadings.map((heading) => (
               <a
                 href={`#${heading.slug}`}
                 data-toc={heading.slug}
-                class={`toc-link block py-1 text-[var(--text-muted)] hover:text-sky-400 hover:border-l hover:border-sky-400 transition-colors ${
-                  heading.depth === 3 ? 'pl-6 text-[11px]' : 'pl-3'
-                }`}
+                class={`toc-link block py-1 -ml-px border-l border-transparent text-[var(--text-muted)] hover:text-[var(--text-high)] transition-colors ${heading.depth === 3 ? 'pl-6 text-xs' : 'pl-3'}`}
               >
                 {heading.text.replace(/#$/, '')}
               </a>
@@ -224,6 +156,10 @@ const readingTime = remarkPluginFrontmatter?.readingTime || '4 min read';
       </aside>
     )}
   </div>
+
+  <footer class="max-w-6xl mx-auto px-6 mt-24 mb-10 text-xs text-[var(--text-muted)]">
+    <div class="border-t border-[var(--border)] pt-6">© {new Date().getFullYear()} Sahil Singh Rawat</div>
+  </footer>
 
   <script is:inline>
     (function () {

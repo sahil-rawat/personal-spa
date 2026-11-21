@@ -1,0 +1,151 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import {
+  getPosts, normalizeCategory, postSlug, postDescription, isoDay, slugify, seriesParts, allSeries,
+} from '../lib/posts';
+
+const allPosts = await getPosts();
+
+const toItem = (p: (typeof allPosts)[number]) => ({
+  title: p.data.title,
+  date: isoDay(p.data.date),
+  href: `/posts/${postSlug(p.id)}/`,
+  summary: postDescription(p),
+  tags: p.data.tags,
+  category: normalizeCategory(p.data.categories?.[0]),
+});
+
+// Collapse each series into one row (placed at its newest part's position).
+const seen = new Set<string>();
+const feed: (ReturnType<typeof toItem> & { series: null | number; searchText: string })[] = [];
+for (const p of allPosts) {
+  const series = p.data.series;
+  if (!series) {
+    feed.push({ ...toItem(p), series: null, searchText: '' });
+  } else if (!seen.has(series)) {
+    seen.add(series);
+    const parts = seriesParts(allPosts, series);
+    feed.push({
+      ...toItem(p),
+      title: series,
+      href: `/series/${slugify(series)}/`,
+      summary: `A ${parts.length}-part series. Starts with "${parts[0].data.title}".`,
+      tags: [...new Set(parts.flatMap((x) => x.data.tags))],
+      series: parts.length,
+      searchText: parts.map((x) => x.data.title).join(' '),
+    });
+  }
+}
+const categories = ['All', ...new Set(feed.map((p) => p.category))];
+---
+
+<BaseLayout title="Engineering — Sahil Singh Rawat" description="Writing on distributed systems, JVM internals, application security and bug bounty.">
+  <SiteHeader active="engineering" />
+
+  <main id="main" class="wrap-narrow pt-14 pb-4">
+    <h1 class="h-page mb-2">Engineering</h1>
+    <p class="text-[var(--text-muted)] mb-8">
+      {allPosts.length} posts on systems, security and internals.{' '}
+      <a href="/articles/" class="text-[var(--text-high)] border-b border-[var(--border-hover)] hover:border-[var(--text-high)]">Archive by year</a>
+      <span aria-hidden="true"> · </span>
+      <a href="/tags/" class="text-[var(--text-high)] border-b border-[var(--border-hover)] hover:border-[var(--text-high)]">Tags</a>
+    </p>
+
+    <label class="sr-only" for="search-input">Filter posts</label>
+    <input
+      id="search-input" type="search" autocomplete="off"
+      placeholder="Filter by title or #tag…  ( / )"
+      class="w-full bg-transparent border border-[var(--border-hover)] focus:border-[var(--text-high)] rounded-lg px-4 py-2.5 text-sm text-[var(--text-high)] placeholder-[var(--text-muted)] outline-none transition-colors mb-4"
+    />
+
+    <div class="flex flex-wrap items-center gap-2 mb-6" id="category-filters">
+      {categories.map((cat, idx) => (
+        <button type="button" data-category={cat} aria-pressed={idx === 0} class="category-btn chip">{cat}</button>
+      ))}
+      <span id="article-count" aria-live="polite" class="ml-auto label">{feed.length} of {feed.length}</span>
+    </div>
+
+    <div id="articles-container" class="rows">
+      {feed.map((post) => (
+        <article
+          class="article-item row group"
+          data-title={post.title.toLowerCase()}
+          data-summary={(post.summary + ' ' + post.searchText).toLowerCase()}
+          data-category={post.category}
+          data-tags={post.tags.join(',').toLowerCase()}
+        >
+          <div class="min-w-0">
+            <h2 class="row-title">
+              <a href={post.href} class="after:absolute after:inset-0">{post.title}</a>
+            </h2>
+            <div class="row-meta">
+              {post.category}{post.series ? ` · Series · ${post.series} parts` : ''}
+              {post.tags.slice(0, 3).map((tag) => (
+                <button type="button" data-tag={tag.toLowerCase()} class="tag-btn tag-link relative z-10 ml-2">#{tag}</button>
+              ))}
+            </div>
+          </div>
+          <time class="row-date" datetime={post.date}>{post.date.slice(0, 4)}</time>
+        </article>
+      ))}
+    </div>
+
+    <div id="empty-state" class="hidden text-center py-16">
+      <p class="text-[var(--text-muted)]">No posts match that search.</p>
+      <button id="reset-filter-btn" type="button" class="mt-3 text-sm text-[var(--text-high)] border-b border-[var(--text-high)]">Clear filters</button>
+    </div>
+  </main>
+
+  <SiteFooter />
+
+  <script is:inline>
+    (function () {
+      const input = document.getElementById('search-input');
+      const catBtns = document.querySelectorAll('.category-btn');
+      const items = document.querySelectorAll('.article-item');
+      const empty = document.getElementById('empty-state');
+      const count = document.getElementById('article-count');
+      let category = 'All';
+
+      function apply() {
+        const q = input.value.trim().toLowerCase();
+        let n = 0;
+        items.forEach((el) => {
+          const okCat = category === 'All' || el.dataset.category === category;
+          const okQ = !q || el.dataset.title.includes(q) || el.dataset.summary.includes(q) || el.dataset.tags.includes(q);
+          el.classList.toggle('hidden', !(okCat && okQ));
+          if (okCat && okQ) n++;
+        });
+        count.textContent = n + ' of ' + items.length;
+        empty.classList.toggle('hidden', n > 0);
+      }
+
+      input.addEventListener('input', apply);
+      catBtns.forEach((b) => b.addEventListener('click', () => {
+        category = b.dataset.category;
+        catBtns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        apply();
+      }));
+      document.querySelectorAll('.tag-btn').forEach((b) => b.addEventListener('click', (e) => {
+        e.preventDefault(); e.stopPropagation();
+        input.value = b.dataset.tag;
+        apply();
+        input.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      }));
+      document.getElementById('reset-filter-btn').addEventListener('click', () => {
+        input.value = '';
+        category = 'All';
+        catBtns.forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.category === 'All')));
+        apply();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement && document.activeElement.tagName)) {
+          e.preventDefault();
+          input.focus();
+        }
+      });
+    })();
+  </script>
+</BaseLayout>

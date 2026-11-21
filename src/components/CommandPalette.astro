@@ -18,13 +18,14 @@
   const go = (url: string) => () => { window.location.href = url; };
   const actions: Item[] = [
     { label: 'Home', hint: 'page', run: go('/') },
-    { label: 'Articles', hint: 'page', run: go('/articles/') },
+    { label: 'Engineering', hint: 'page', run: go('/engineering/') },
+    { label: 'Archive by year', hint: 'page', run: go('/articles/') },
     { label: 'Tags', hint: 'page', run: go('/tags/') },
     { label: 'Full-text search', hint: 'page', run: go('/search/') },
     { label: 'About & contact', hint: 'page', run: go('/about/') },
     { label: 'RSS feed', hint: 'page', run: go('/rss.xml') },
     { label: 'Toggle light / dark theme', hint: 'action', run: () => document.getElementById('theme-toggle')?.click() },
-    ...['sky', 'violet', 'emerald', 'amber', 'rose'].map((a) => ({
+    ...['yellow', 'blue', 'green', 'pink', 'orange'].map((a) => ({
       label: `Accent colour: ${a}`, hint: 'action',
       run: () => document.querySelector<HTMLButtonElement>(`[data-accent-id="${a}"]`)?.click(),
     })),

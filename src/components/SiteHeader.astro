@@ -2,26 +2,23 @@
 import ThemeToggle from './ThemeToggle.astro';
 import AccentPicker from './AccentPicker.astro';
 const { active = '' } = Astro.props;
-const link = (name: string) =>
-  `transition-colors ${active === name ? 'text-sky-400 font-medium' : 'hover:text-[var(--text-high)]'}`;
+const cur = (name: string) => (active === name ? 'page' : undefined);
 ---
 
-<header class="border-b border-[var(--border)] bg-[var(--bg-canvas)]/80 backdrop-blur-md sticky top-0 z-50">
-  <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-    <a href="/" class="flex items-center gap-2 font-mono text-sm font-semibold tracking-tight text-[var(--text-high)] group">
-      <span class="w-2.5 h-2.5 rounded-sm bg-sky-400 group-hover:rotate-45 transition-transform"></span>
-      <span class="hidden min-[440px]:inline">sahilsinghrawat.com</span>
-      <span class="sr-only min-[440px]:hidden">Home</span>
+<header class="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--bg-canvas)]/85 backdrop-blur-md">
+  <div class="wrap h-16 flex items-center justify-between">
+    <a href="/" class="text-[0.95rem] font-semibold tracking-tight text-[var(--text-high)]" aria-label="Sahil Singh Rawat, home">
+      sahil<span class="dot-mark">.</span>
     </a>
-    <nav aria-label="Primary" class="flex items-center gap-4 sm:gap-6 text-xs font-mono text-[var(--text-muted)]">
-      <a href="/about/" class:list={[link('about'), 'hidden sm:inline']}>/about</a>
-      <a href="/articles/" class={link('articles')}>/articles</a>
-      <a href="/tags/" class:list={[link('tags'), 'hidden sm:inline']}>/tags</a>
-      <a href="/search/" class={link('search')}>/search</a>
-      <a href="https://github.com/sahil-rawat" target="_blank" rel="noreferrer" class="hidden md:inline hover:text-[var(--text-high)] transition-colors">/github</a>
-      <button type="button" data-open-palette aria-label="Open command palette" class="hidden md:inline-flex items-center gap-1 h-8 px-2 rounded-md border border-[var(--border)] bg-[var(--bg-surface)] hover:border-[var(--border-hover)] hover:text-[var(--text-high)] transition-colors">⌘K</button>
-      <AccentPicker />
-      <ThemeToggle />
+    <nav aria-label="Primary" class="flex items-center gap-4 sm:gap-6 text-sm">
+      <a href="/engineering/" class="nav-link" aria-current={cur('engineering')}>Engineering</a>
+      <a href="/about/" class="nav-link" aria-current={cur('about')}>About</a>
+      <a href="/about/#contact" class="nav-link hidden sm:inline">Contact</a>
+      <span class="flex items-center gap-1.5 ml-1">
+        <button type="button" data-open-palette aria-label="Open command palette" class="icon-btn hidden md:inline-flex">⌘K</button>
+        <AccentPicker />
+        <ThemeToggle />
+      </span>
     </nav>
   </div>
 </header>

@@ -45,6 +45,7 @@ You can also write and edit through the browser at **/admin** (Decap CMS). It co
 ## Project layout
 
 - `src/lib/posts.ts` — post helpers (categories, series, tags, related posts, excerpts)
+- `src/pages/index.astro` — landing page; `src/pages/engineering.astro` — the post feed (search, categories, series)
 - `src/layouts/BaseLayout.astro` — head, SEO and Open Graph tags
 - `src/pages/og/[slug].png.ts` — generates a social card image per post
 - `functions/api/` — Cloudflare Pages Functions for the CMS login

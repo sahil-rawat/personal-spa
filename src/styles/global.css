@@ -1,53 +1,56 @@
 @import "tailwindcss";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
 
 @layer base {
-  /* Default: Dark Theme */
+  /* Default: dark */
   :root {
-    --bg-canvas: #090a0f;
-    --bg-surface: #11131a;
-    --bg-surface-hover: #171b26;
-    --bg-code: #0d1117;
-    --border: #1f2433;
-    --border-hover: #2f364d;
-    --text-high: #f1f5f9;
-    --text-body: #94a3b8;
-    --text-muted: #8696ab;
-    --accent: #38bdf8;
+    --bg-canvas: #0e0e0d;
+    --bg-surface: #171716;
+    --bg-surface-hover: #1f1f1d;
+    --bg-code: #1a1a19;
+    --border: #2a2a27;
+    --border-hover: #43433e;
+    --text-high: #f5f5f2;
+    --text-body: #c4c4bd;
+    --text-muted: #8f8f88;
+    --font-ui: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-code: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   }
 
-  /* Light Theme Overrides */
+  /* Light theme */
   :root.light {
-    --bg-canvas: #f8fafc;
-    --bg-surface: #ffffff;
-    --bg-surface-hover: #f1f5f9;
-    --bg-code: #f1f5f9;
-    --border: #e2e8f0;
-    --border-hover: #cbd5e1;
-    --text-high: #0f172a;
-    --text-body: #475569;
-    --text-muted: #64748b;
-    --accent: #0369a1;
+    --bg-canvas: #fcfcfb;
+    --bg-surface: #f6f6f3;
+    --bg-surface-hover: #efefeb;
+    --bg-code: #f6f6f3;
+    --border: #e7e7e4;
+    --border-hover: #cfcfca;
+    --text-high: #111110;
+    --text-body: #3f3f3a;
+    --text-muted: #6b6b66;
   }
 }
 
 body {
   background-color: var(--bg-canvas);
   color: var(--text-high);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+  font-family: var(--font-ui);
+  font-feature-settings: "cv11", "ss03";
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .panel {
-  background-color: var(--bg-surface);
+  background-color: transparent;
   border: 1px solid var(--border);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .panel:hover {
-  background-color: var(--bg-surface-hover);
+  background-color: var(--bg-surface);
   border-color: var(--border-hover);
-  transform: translateY(-1px);
 }
 
 /* Roomy Editorial Typography for Articles */
@@ -64,8 +67,8 @@ body {
 .article-content h3,
 .article-content h4 {
   color: var(--text-high);
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-weight: 600;
+  letter-spacing: -0.025em;
   margin-top: 3rem;
   margin-bottom: 1.25rem;
   line-height: 1.3;
@@ -102,13 +105,16 @@ body {
 }
 
 .article-content a {
-  color: var(--accent);
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  color: var(--text-high);
+  text-decoration: none;
+  background: linear-gradient(transparent 62%, color-mix(in srgb, var(--accent-fill) 70%, transparent) 62%);
+  transition: background-color 0.15s;
 }
+.article-content a:hover { background: var(--accent-fill); }
+.article-content a.heading-anchor, .article-content a:has(> img) { background: none; }
 
 .article-content blockquote {
-  border-left: 3px solid var(--accent);
+  border-left: 3px solid var(--accent-fill);
   padding-left: 1.25rem;
   margin-top: 2rem;
   margin-bottom: 2rem;
@@ -118,10 +124,10 @@ body {
 
 /* Only style INLINE code pills - NEVER touch <pre> blocks */
 .article-content :not(pre) > code {
-  color: var(--accent);
+  color: var(--text-high);
   background: var(--bg-surface);
   border: 1px solid var(--border);
-  padding: 0.2rem 0.45rem;
+  padding: 0.15rem 0.4rem;
   border-radius: 0.35rem;
   font-size: 0.88em;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -144,28 +150,7 @@ body {
   padding: 0 !important;
 }
 
-/* Background management */
-html:not(.light) pre.astro-code {
-  background-color: #0d1117 !important;
-}
-
-html.light pre.astro-code {
-  background-color: #f6f8fa !important;
-}
-
-/* Shiki Dual-Theme Token Switcher */
-/* Only applies --shiki-dark when defined, preserving inline syntax colors */
-html:not(.light) .astro-code span[style*="--shiki-dark"] {
-  color: var(--shiki-dark) !important;
-  font-style: var(--shiki-dark-font-style) !important;
-  font-weight: var(--shiki-dark-font-weight) !important;
-}
-
-html.light .astro-code span[style*="--shiki-light"] {
-  color: var(--shiki-light) !important;
-  font-style: var(--shiki-light-font-style) !important;
-  font-weight: var(--shiki-light-font-weight) !important;
-}
+/* One dark code theme in both modes */
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -180,13 +165,6 @@ html.light .astro-code span[style*="--shiki-light"] {
   border-radius: 0.5rem;
 }
 
-
-/* Accessible accent in light mode (sky-400 is too pale on white) */
-html.light .text-sky-400,
-html.light .hover\:text-sky-400:hover,
-html.light .group:hover .group-hover\:text-sky-400 {
-  color: var(--accent);
-}
 
 :focus-visible {
   outline: 2px solid var(--accent);
@@ -212,8 +190,8 @@ html.light .group:hover .group-hover\:text-sky-400 {
 
 /* TOC scrollspy */
 .toc-link.toc-active {
-  color: var(--accent);
-  border-left: 1px solid var(--accent);
+  color: var(--text-high);
+  border-left-color: var(--text-high);
 }
 
 /* Pagefind search UI theming */
@@ -237,26 +215,26 @@ html.light .group:hover .group-hover\:text-sky-400 {
   body, .article-content { background: #fff !important; color: #000 !important; }
   .article-content a { color: #000; text-decoration: underline; }
   .article-content a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.8em; }
-  pre.astro-code { white-space: pre-wrap !important; border: 1px solid #ccc !important; background: #f6f8fa !important; }
+  pre.astro-code { white-space: pre-wrap !important; border: 1px solid #ccc !important; background: #f6f6f3 !important; }
   pre.astro-code span { color: #000 !important; }
   img { max-width: 100% !important; break-inside: avoid; }
 }
 
 /* ---------- Accent colour system ---------- */
-/* Tailwind's sky-* utilities read these vars, so one override recolours the whole site. */
+/* --accent-fill: highlighter colour for backgrounds. --accent: readable ink version for text. */
 html {
-  --a-d: #38bdf8;
-  --a-l: #0369a1;
-  --accent: var(--a-d);
+  --af: #ffe45c; --ai-l: #7a6200; --ai-d: #ffe45c;
+  --accent-fill: var(--af);
+  --accent: var(--ai-d);
   --color-sky-300: var(--accent);
   --color-sky-400: var(--accent);
-  --color-sky-500: var(--accent);
+  --color-sky-500: var(--accent-fill);
 }
-html.light { --accent: var(--a-l); }
-html[data-accent="violet"]  { --a-d: #a78bfa; --a-l: #6d28d9; }
-html[data-accent="emerald"] { --a-d: #34d399; --a-l: #047857; }
-html[data-accent="amber"]   { --a-d: #fbbf24; --a-l: #b45309; }
-html[data-accent="rose"]    { --a-d: #fb7185; --a-l: #be123c; }
+html.light { --accent: var(--ai-l); }
+html[data-accent="blue"]   { --af: #bfdbfe; --ai-l: #1d4ed8; --ai-d: #93c5fd; }
+html[data-accent="green"]  { --af: #bbf7d0; --ai-l: #15803d; --ai-d: #86efac; }
+html[data-accent="pink"]   { --af: #fbcfe8; --ai-l: #be185d; --ai-d: #f9a8d4; }
+html[data-accent="orange"] { --af: #fed7aa; --ai-l: #c2410c; --ai-d: #fdba74; }
 
 /* ---------- Page transitions (native, no JS) ---------- */
 @view-transition { navigation: auto; }
@@ -278,14 +256,14 @@ html[data-wide] .post-main { max-width: 56rem; }
   padding: 0.4rem 0.75rem 0.4rem 1rem;
   border: 1px solid var(--border); border-bottom: 0;
   border-radius: 0.65rem 0.65rem 0 0;
-  background: var(--bg-surface);
+  background: #222221; border-color: #2e2e2b;
   font: 500 0.72rem ui-monospace, SFMono-Regular, Menlo, monospace;
   color: var(--text-muted);
 }
 .code-block .code-head .code-label { text-transform: lowercase; letter-spacing: 0.04em; }
-.code-block .code-head .code-label.is-title { color: var(--text-high); text-transform: none; }
-.code-block .code-head button { color: var(--text-muted); font: inherit; padding: 0.15rem 0.5rem; border-radius: 0.3rem; }
-.code-block .code-head button:hover { color: var(--text-high); background: var(--bg-surface-hover); }
+.code-block .code-head .code-label.is-title { color: #f5f5f2; text-transform: none; }
+.code-block .code-head button { color: #a8a8a0; font: inherit; padding: 0.15rem 0.5rem; border-radius: 0.3rem; }
+.code-block .code-head button:hover { color: #fff; background: #2e2e2b; }
 .article-content .code-block pre.astro-code {
   margin: 0 !important; border-top-left-radius: 0 !important; border-top-right-radius: 0 !important;
 }
@@ -293,7 +271,7 @@ html[data-wide] .post-main { max-width: 56rem; }
 .code-block .code-expand {
   display: none; width: 100%; padding: 0.5rem; text-align: center;
   border: 1px solid var(--border); border-top: 0; border-radius: 0 0 0.65rem 0.65rem;
-  background: var(--bg-surface); color: var(--accent);
+  background: #222221; border-color: #2e2e2b; color: #ffe45c;
   font: 500 0.75rem ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 .code-block.collapsed .code-expand { display: block; }
@@ -327,7 +305,7 @@ html.light .article-content .callout-caution { --c: #b91c1c; }
 .article-content .callout::before, .article-content .callout::after { content: none; }
 
 /* ---------- Footnotes ---------- */
-.article-content sup a { color: var(--accent); text-decoration: none; padding: 0 0.1rem; }
+.article-content sup a { color: var(--text-high); background: none; padding: 0 0.1rem; }
 .article-content section.footnotes {
   margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
   font-size: 0.85em; color: var(--text-muted);
@@ -385,3 +363,66 @@ dialog.palette::backdrop { background: rgba(0, 0, 0, 0.55); backdrop-filter: blu
 /* ---------- Series read tracker ---------- */
 .read-mark { display: none; color: #34d399; font-size: 0.8rem; }
 .is-read .read-mark { display: inline; }
+
+
+/* =====================================================================
+   Minimal theme: shared components
+   ===================================================================== */
+.wrap { max-width: 56rem; margin-inline: auto; padding-inline: 1.5rem; }
+.wrap-narrow { max-width: 44rem; margin-inline: auto; padding-inline: 1.5rem; }
+
+.hl { background: linear-gradient(transparent 62%, var(--accent-fill) 62%); }
+.dot-mark { background: var(--accent-fill); color: var(--text-high); padding: 0 0.2em; margin-left: 1px; border-radius: 2px; }
+html:not(.light) .dot-mark { color: #111110; }
+
+.eyebrow { font-size: 0.8rem; color: var(--text-muted); letter-spacing: 0.02em; }
+.display {
+  font-size: clamp(2.5rem, 7vw, 3.9rem);
+  line-height: 1.02; font-weight: 500; letter-spacing: -0.04em; color: var(--text-high);
+}
+.h-page { font-size: clamp(2rem, 5vw, 2.6rem); font-weight: 500; letter-spacing: -0.03em; line-height: 1.1; }
+.label { font-size: 0.8rem; color: var(--text-muted); }
+.muted { color: var(--text-muted); }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-size: 0.9rem; font-weight: 500; padding: 0.6rem 1.15rem; border-radius: 999px;
+  transition: opacity 0.15s, background-color 0.15s;
+}
+.btn-primary { background: var(--text-high); color: var(--bg-canvas); }
+.btn-primary:hover { opacity: 0.85; }
+.btn-ghost { color: var(--text-high); border-bottom: 1.5px solid var(--text-high); border-radius: 0; padding: 0.2rem 0; }
+.btn-ghost:hover { border-color: var(--accent-fill); background: color-mix(in srgb, var(--accent-fill) 35%, transparent); }
+
+.chip {
+  font-size: 0.8rem; padding: 0.25rem 0.8rem; border-radius: 999px;
+  border: 1px solid var(--border-hover); color: var(--text-body);
+  transition: background-color 0.15s, color 0.15s;
+}
+.chip:hover { background: var(--bg-surface); }
+.chip[aria-pressed="true"], .chip.is-active { background: var(--text-high); color: var(--bg-canvas); border-color: var(--text-high); }
+
+.rows { border-top: 1px solid var(--border); }
+.row {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+  padding: 1rem 0; border-bottom: 1px solid var(--border); position: relative;
+}
+.row .row-title { font-size: 1.15rem; letter-spacing: -0.01em; color: var(--text-high); line-height: 1.35; }
+.row .row-meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem; }
+.row .row-date { font-size: 0.8rem; color: var(--text-muted); white-space: nowrap; }
+.row:hover .row-title { background: linear-gradient(transparent 62%, var(--accent-fill) 62%); }
+
+.nav-link { color: var(--text-muted); transition: color 0.15s; padding: 0.25rem 0; border-bottom: 1.5px solid transparent; }
+.nav-link:hover { color: var(--text-high); }
+.nav-link[aria-current="page"] { color: var(--text-high); border-color: var(--text-high); }
+
+.icon-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 2rem; min-width: 2rem; padding-inline: 0.4rem; border-radius: 0.5rem;
+  border: 1px solid var(--border); color: var(--text-muted); font-size: 0.75rem;
+  transition: border-color 0.15s, color 0.15s;
+}
+.icon-btn:hover { border-color: var(--border-hover); color: var(--text-high); }
+
+.tag-link { font-size: 0.8rem; color: var(--text-muted); transition: color 0.15s; }
+.tag-link:hover { color: var(--text-high); text-decoration: underline; text-underline-offset: 3px; }

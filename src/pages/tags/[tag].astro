@@ -17,14 +17,14 @@ const { tag, posts } = Astro.props;
 ---
 
 <BaseLayout title={`#${tag} — Sahil Singh Rawat`} description={`${posts.length} article${posts.length === 1 ? '' : 's'} tagged ${tag}.`}>
-  <SiteHeader active="tags" />
-  <main id="main" class="max-w-3xl mx-auto px-6 py-16 space-y-8">
+  <SiteHeader active="engineering" />
+  <main id="main" class="wrap-narrow pt-14 space-y-8">
     <div>
-      <a href="/tags/" class="text-xs font-mono text-[var(--text-muted)] hover:text-sky-400">← all tags</a>
-      <h1 class="text-3xl font-extrabold tracking-tight mt-2">#{tag}</h1>
-      <p class="text-sm text-[var(--text-muted)] mt-1">{posts.length} article{posts.length === 1 ? '' : 's'}</p>
+      <a href="/tags/" class="label hover:text-[var(--text-high)]">← All tags</a>
+      <h1 class="h-page mt-3">#{tag}</h1>
+      <p class="text-[var(--text-muted)] mt-2">{posts.length} post{posts.length === 1 ? '' : 's'}</p>
     </div>
-    <div class="space-y-3">
+    <div class="rows">
       {posts.map((p) => <PostCard post={p} />)}
     </div>
   </main>

@@ -38,10 +38,7 @@ export default defineConfig({
       }],
     ],
     shikiConfig: {
-      themes: {
-        light: 'github-light',
-        dark: 'one-dark-pro',
-      },
+      theme: 'one-dark-pro',
       wrap: true,
       transformers: [codeMeta, transformerNotationHighlight()],
     },

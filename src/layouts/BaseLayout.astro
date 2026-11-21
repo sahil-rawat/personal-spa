@@ -68,7 +68,7 @@ const imageUrl = new URL(image, siteUrl).href;
     try {
       const r = document.documentElement;
       const a = localStorage.getItem('accent');
-      if (a && a !== 'sky') r.setAttribute('data-accent', a);
+      if (a && ['blue', 'green', 'pink', 'orange'].includes(a)) r.setAttribute('data-accent', a);
       const fs = localStorage.getItem('reader-fs');
       if (fs) r.setAttribute('data-fs', fs);
       if (localStorage.getItem('reader-wide') === '1') r.setAttribute('data-wide', '');

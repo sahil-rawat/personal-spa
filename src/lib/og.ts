@@ -20,13 +20,13 @@ export async function renderOg(opts: { title: string; eyebrow?: string; footer?:
 
   const tree = el('div', {
     width: '100%', height: '100%', flexDirection: 'column', justifyContent: 'space-between',
-    padding: '72px', background: '#090a0f', color: '#f1f5f9', fontFamily: 'Inter',
-    borderTop: '8px solid #38bdf8',
+    padding: '72px', background: '#fcfcfb', color: '#111110', fontFamily: 'Inter',
+    borderTop: '10px solid #ffe45c',
   }, [
-    el('div', { fontSize: 28, color: '#38bdf8', letterSpacing: 4, fontWeight: 700 }, eyebrow.toUpperCase()),
-    el('div', { fontSize: size, fontWeight: 700, lineHeight: 1.15, letterSpacing: -1 }, title),
-    el('div', { justifyContent: 'space-between', fontSize: 28, color: '#94a3b8' }, [
-      el('div', {}, 'Sahil Singh Rawat'),
+    el('div', { fontSize: 26, color: '#6b6b66', letterSpacing: 1, fontWeight: 400 }, eyebrow),
+    el('div', { fontSize: size, fontWeight: 700, lineHeight: 1.08, letterSpacing: -2 }, title),
+    el('div', { justifyContent: 'space-between', fontSize: 28, color: '#6b6b66' }, [
+      el('div', { color: '#111110', fontWeight: 700 }, 'sahil.'),
       el('div', {}, footer),
     ]),
   ]);

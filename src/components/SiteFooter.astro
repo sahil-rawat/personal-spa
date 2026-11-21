@@ -8,23 +8,22 @@ if (!sha) {
 const built = new Date().toISOString().split('T')[0];
 ---
 
-<footer class="border-t border-[var(--border)] py-12 text-xs font-mono text-[var(--text-muted)] mt-24">
-  <div class="max-w-5xl mx-auto px-6 space-y-6">
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-      <p>© {new Date().getFullYear()} Sahil Singh Rawat. All rights reserved.</p>
-      <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+<footer class="border-t border-[var(--border)] mt-24 py-10 text-sm text-[var(--text-muted)]">
+  <div class="wrap space-y-5">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <p>© {new Date().getFullYear()} Sahil Singh Rawat</p>
+      <div class="flex flex-wrap gap-x-6 gap-y-2">
+        <a href="/engineering/" class="hover:text-[var(--text-high)] transition-colors">Engineering</a>
         <a href="/rss.xml" class="hover:text-[var(--text-high)] transition-colors">RSS</a>
         <a href="https://github.com/sahil-rawat" target="_blank" rel="noreferrer" class="hover:text-[var(--text-high)] transition-colors">GitHub</a>
-        <a href="https://twitter.com/sahil_s_rawat" target="_blank" rel="noreferrer" class="hover:text-[var(--text-high)] transition-colors">Twitter</a>
         <a href="https://www.linkedin.com/in/sahil-singh-rawat" target="_blank" rel="noreferrer" class="hover:text-[var(--text-high)] transition-colors">LinkedIn</a>
-        <a href="mailto:contact@sahilsinghrawat.com" class="hover:text-[var(--text-high)] transition-colors">Contact</a>
+        <a href="https://twitter.com/sahil_s_rawat" target="_blank" rel="noreferrer" class="hover:text-[var(--text-high)] transition-colors">Twitter</a>
+        <a href="mailto:contact@sahilsinghrawat.com" class="hover:text-[var(--text-high)] transition-colors">Email</a>
       </div>
     </div>
-    <p class="text-center sm:text-left flex flex-wrap items-center justify-center sm:justify-start gap-x-3 gap-y-1">
-      <span class="inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Built {built}</span>
-      {sha && (
-        <span>· <a href={`https://github.com/sahil-rawat/personal-spa/commit/${sha}`} target="_blank" rel="noreferrer" class="hover:text-[var(--text-high)] underline-offset-2 hover:underline">{sha}</a></span>
-      )}
+    <p class="text-xs flex flex-wrap items-center gap-x-3 gap-y-1">
+      <span>Built {built}</span>
+      {sha && <a href={`https://github.com/sahil-rawat/personal-spa/commit/${sha}`} target="_blank" rel="noreferrer" class="hover:text-[var(--text-high)] hover:underline underline-offset-2">{sha}</a>}
       <span class="hidden md:inline">· press <kbd class="px-1 border border-[var(--border)] rounded">⌘K</kbd> to jump anywhere</span>
     </p>
   </div>

@@ -13,27 +13,28 @@ for (const p of posts) {
 const years = [...byYear.keys()].sort((a, b) => b - a);
 ---
 
-<BaseLayout title="Articles — Sahil Singh Rawat" description={`All ${posts.length} articles, newest first.`}>
-  <SiteHeader active="articles" />
-  <main id="main" class="max-w-3xl mx-auto px-6 py-16 space-y-12">
+<BaseLayout title="Archive — Sahil Singh Rawat" description={`All ${posts.length} posts, newest first.`}>
+  <SiteHeader active="engineering" />
+  <main id="main" class="wrap-narrow pt-14 space-y-12">
     <div>
-      <h1 class="text-3xl font-extrabold tracking-tight">Articles</h1>
-      <p class="text-sm text-[var(--text-muted)] mt-2">{posts.length} posts · <a href="/tags/" class="text-sky-400 hover:underline">browse by tag</a> · <a href="/rss.xml" class="text-sky-400 hover:underline">RSS</a></p>
+      <a href="/engineering/" class="label hover:text-[var(--text-high)]">← Engineering</a>
+      <h1 class="h-page mt-3">Archive</h1>
+      <p class="text-[var(--text-muted)] mt-2">{posts.length} posts · <a href="/tags/" class="text-[var(--text-high)] border-b border-[var(--border-hover)]">tags</a> · <a href="/rss.xml" class="text-[var(--text-high)] border-b border-[var(--border-hover)]">RSS</a></p>
     </div>
     {years.map((year) => (
       <section aria-labelledby={`y${year}`}>
-        <h2 id={`y${year}`} class="text-xs font-mono uppercase tracking-widest text-[var(--text-muted)] font-bold border-b border-[var(--border)] pb-2 mb-4">{year}</h2>
-        <ul class="space-y-3">
+        <h2 id={`y${year}`} class="label mb-3">{year}</h2>
+        <div class="rows">
           {byYear.get(year)!.map((p) => (
-            <li class="flex gap-4 items-baseline">
-              <time datetime={isoDay(p.data.date)} class="shrink-0 w-24 text-xs font-mono text-[var(--text-muted)]">{isoDay(p.data.date)}</time>
+            <a href={postUrl(p)} class="row">
               <div class="min-w-0">
-                <a href={postUrl(p)} class="font-medium text-[var(--text-high)] hover:text-sky-400 transition-colors">{p.data.title}</a>
-                <span class="ml-2 text-xs font-mono text-[var(--text-muted)]">{normalizeCategory(p.data.categories?.[0])}</span>
+                <div class="row-title !text-base">{p.data.title}</div>
+                <div class="row-meta">{normalizeCategory(p.data.categories?.[0])}</div>
               </div>
-            </li>
+              <time class="row-date" datetime={isoDay(p.data.date)}>{isoDay(p.data.date).slice(5)}</time>
+            </a>
           ))}
-        </ul>
+        </div>
       </section>
     ))}
   </main>
