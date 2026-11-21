@@ -6,6 +6,7 @@ categories: [Development]
 tags: [ai, productivity, prompting]
 draft: true
 ---
+![Ask better questions: a vague prompt compared with a structured prompt that has a goal, context, constraints and output](/assets/img/posts/ask-ai-better-questions.png)
 
 Most disappointing answers from an AI assistant are not the model's fault. They are the question's fault.
 
