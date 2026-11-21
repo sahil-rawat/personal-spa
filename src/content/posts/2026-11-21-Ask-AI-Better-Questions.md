@@ -4,7 +4,6 @@ date: 2026-11-21 10:00:00 +0530
 description: "A practical guide to asking AI better questions: simple, repeatable patterns for debugging, code review and learning that get you useful answers faster."
 categories: [Development]
 tags: [ai, productivity, prompting]
-draft: true
 ---
 ![Ask better questions: a vague prompt compared with a structured prompt that has a goal, context, constraints and output](/assets/img/posts/ask-ai-better-questions.png)
 
