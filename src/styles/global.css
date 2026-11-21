@@ -393,6 +393,8 @@ html:not(.light) .dot-mark { color: #111110; }
 .btn-primary { background: var(--text-high); color: var(--bg-canvas); }
 .btn-primary:hover { opacity: 0.85; }
 .btn-ghost { color: var(--text-high); border-bottom: 1.5px solid var(--text-high); border-radius: 0; padding: 0.2rem 0; }
+.btn .nudge { display: inline-block; transition: transform 0.2s ease; }
+.btn:hover .nudge { transform: translateX(4px); }
 .btn-ghost:hover { border-color: var(--accent-fill); background: color-mix(in srgb, var(--accent-fill) 35%, transparent); }
 
 .chip {
@@ -411,7 +413,17 @@ html:not(.light) .dot-mark { color: #111110; }
 .row .row-title { font-size: 1.15rem; letter-spacing: -0.01em; color: var(--text-high); line-height: 1.35; }
 .row .row-meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem; }
 .row .row-date { font-size: 0.8rem; color: var(--text-muted); white-space: nowrap; }
-.row:hover .row-title { background: linear-gradient(transparent 62%, var(--accent-fill) 62%); }
+/* Highlight sweeps left to right under the title on hover/focus */
+.row .row-title {
+  display: inline;
+  background-image: linear-gradient(var(--accent-fill), var(--accent-fill));
+  background-repeat: no-repeat;
+  background-position: 0 88%;
+  background-size: 0% 38%;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  transition: background-size 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.row:hover .row-title, .row:focus-visible .row-title, .row:focus-within .row-title { background-size: 100% 38%; }
 
 .nav-link { color: var(--text-muted); transition: color 0.15s; padding: 0.25rem 0; border-bottom: 1.5px solid transparent; }
 .nav-link:hover { color: var(--text-high); }
@@ -428,3 +440,41 @@ html:not(.light) .dot-mark { color: #111110; }
 .tag-link { font-size: 0.8rem; color: var(--text-muted); transition: color 0.15s; }
 .tag-link:hover { color: var(--text-high); text-decoration: underline; text-underline-offset: 3px; }
 }
+
+
+/* ---------- Chess easter egg ---------- */
+dialog.chess-egg {
+  margin: 8vh auto 0; padding: 0; width: min(26rem, calc(100vw - 2rem));
+  border: 1px solid var(--border-hover); border-radius: 0.9rem; overflow: hidden;
+  background: var(--bg-canvas); color: var(--text-high);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+}
+dialog.chess-egg::backdrop { background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(2px); }
+.chess-box { padding: 1rem 1rem 1.1rem; }
+.chess-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.9rem; }
+.chess-title { font-weight: 600; letter-spacing: -0.02em; font-size: 1.1rem; }
+.chess-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem; }
+.chess-board {
+  display: grid; grid-template-columns: repeat(8, 1fr);
+  border: 1px solid var(--border-hover); border-radius: 0.4rem; overflow: hidden;
+  aspect-ratio: 1; width: 100%;
+}
+.chess-sq {
+  position: relative; display: flex; align-items: center; justify-content: center;
+  font-size: clamp(1.5rem, 8vw, 2.3rem); line-height: 1; padding: 0; cursor: pointer;
+  border-radius: 0 !important; outline-offset: -3px;
+}
+.chess-sq.light { background: #f0ebdc; }
+.chess-sq.dark { background: #c4b78f; }
+.chess-sq.sel { background: var(--accent-fill) !important; }
+.chess-sq span.w { color: #fff; text-shadow: 0 0 2px #000, 0 0 2px #000, 0 1px 1px #000; }
+.chess-sq span.b { color: #17140f; }
+.chess-actions { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.9rem; flex-wrap: wrap; }
+
+
+/* ---------- 404 map ---------- */
+.lost-map { width: min(20rem, 100%); height: auto; color: var(--text-high); }
+.lost-pin { animation: pin-bob 2.4s ease-in-out infinite; transform-box: fill-box; }
+.lost-shadow { animation: pin-shadow 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes pin-bob { 0%, 100% { transform: translate(268px, 40px); } 50% { transform: translate(268px, 33px); } }
+@keyframes pin-shadow { 0%, 100% { transform: scale(1); opacity: 0.18; } 50% { transform: scale(0.75); opacity: 0.1; } }

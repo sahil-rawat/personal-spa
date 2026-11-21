@@ -2,15 +2,50 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import { getPosts, postUrl, normalizeCategory } from '../lib/posts';
+
+const latest = (await getPosts()).slice(0, 3);
 ---
 
-<BaseLayout title="Page not found — Sahil Singh Rawat" noindex>
+<BaseLayout title="Wrong turn — Sahil Singh Rawat" noindex>
   <SiteHeader />
-  <main id="main" class="wrap-narrow pt-24 pb-8">
-    <p class="label mb-4">404</p>
-    <h1 class="display mb-5">That page <span class="hl">wandered off</span>.</h1>
-    <p class="text-lg text-[var(--text-body)] mb-8">It doesn't exist or it has moved.</p>
-    <a href="/engineering/" class="btn btn-primary">Browse the writing</a>
+  <main id="main" class="wrap-narrow pt-16 sm:pt-20 pb-4">
+    <svg class="lost-map" viewBox="0 0 320 120" role="img" aria-label="A winding dashed route ending at a map pin with a question mark" fill="none">
+      <path d="M8 98 C 50 98, 56 52, 100 60 S 150 104, 190 78 S 240 28, 268 40" stroke="currentColor" stroke-width="2" stroke-dasharray="3 7" stroke-linecap="round" opacity="0.55" />
+      <circle cx="8" cy="98" r="4" fill="currentColor" opacity="0.55" />
+      <g class="lost-pin" transform="translate(268 40)">
+        <path d="M0 -26 C -13 -26 -22 -16 -22 -4 C -22 12 0 32 0 32 S 22 12 22 -4 C 22 -16 13 -26 0 -26 Z" fill="var(--accent-fill)" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+        <text x="0" y="3" text-anchor="middle" font-size="20" font-weight="600" fill="currentColor" font-family="Inter, system-ui, sans-serif">?</text>
+      </g>
+      <ellipse class="lost-shadow" cx="268" cy="76" rx="14" ry="3.5" fill="currentColor" opacity="0.18" />
+    </svg>
+
+    <p class="label mt-8 mb-3">404</p>
+    <h1 class="display mb-5">Looks like you took <span class="hl">a wrong turn</span>.</h1>
+    <p class="text-lg leading-relaxed text-[var(--text-body)] max-w-md mb-8">
+      This page doesn't exist, or it has moved. Let's get you back on the road.
+    </p>
+    <div class="flex flex-wrap items-center gap-x-6 gap-y-3 mb-16">
+      <a href="/" class="btn btn-primary">Take me home</a>
+      <a href="/engineering/" class="btn btn-ghost">Browse the writing <span class="nudge">→</span></a>
+    </div>
+
+    {latest.length > 0 && (
+      <section aria-labelledby="dest-h">
+        <h2 id="dest-h" class="label mb-3">Or pick a destination</h2>
+        <div class="rows">
+          {latest.map((p) => (
+            <a href={postUrl(p)} class="row">
+              <div class="min-w-0">
+                <span class="row-title">{p.data.title}</span>
+                <div class="row-meta">{normalizeCategory(p.data.categories?.[0])}</div>
+              </div>
+              <span class="row-date">{p.data.date.getFullYear()}</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
   </main>
   <SiteFooter />
 </BaseLayout>
