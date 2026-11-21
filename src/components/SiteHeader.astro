@@ -6,14 +6,14 @@ const cur = (name: string) => (active === name ? 'page' : undefined);
 ---
 
 <header class="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--bg-canvas)]/85 backdrop-blur-md">
-  <div class="wrap h-16 flex items-center justify-between">
+  <div class="wrap h-16 flex items-center justify-between gap-3">
     <a href="/" class="text-[0.95rem] font-semibold tracking-tight text-[var(--text-high)]" aria-label="Sahil Singh Rawat, home">
       sahil<span class="dot-mark">.</span>
     </a>
-    <nav aria-label="Primary" class="flex items-center gap-4 sm:gap-6 text-sm">
+    <nav aria-label="Primary" class="flex items-center gap-3.5 sm:gap-6 text-sm">
+      <a href="/" class="nav-link" aria-current={cur('home')}>Home</a>
       <a href="/engineering/" class="nav-link" aria-current={cur('engineering')}>Engineering</a>
       <a href="/about/" class="nav-link" aria-current={cur('about')}>About</a>
-      <a href="/about/#contact" class="nav-link hidden sm:inline">Contact</a>
       <span class="flex items-center gap-1.5 ml-1">
         <button type="button" data-open-palette aria-label="Open command palette" class="icon-btn hidden md:inline-flex">⌘K</button>
         <AccentPicker />

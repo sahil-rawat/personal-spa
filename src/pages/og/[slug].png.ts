@@ -5,7 +5,7 @@ import { renderOg } from '../../lib/og';
 export async function getStaticPaths() {
   const posts = await getPosts();
   return [
-    { params: { slug: 'default' }, props: { title: 'Sahil Singh Rawat', eyebrow: 'Software Architect & Security Researcher' } },
+    { params: { slug: 'default' }, props: { title: 'Sahil Singh Rawat', eyebrow: 'Software engineer' } },
     ...posts.map((p) => ({
       params: { slug: postSlug(p.id) },
       props: { title: p.data.title, eyebrow: normalizeCategory(p.data.categories?.[0]) },

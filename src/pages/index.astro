@@ -1,4 +1,5 @@
 ---
+import fs from 'node:fs';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
@@ -6,23 +7,53 @@ import { getPosts, postUrl, isoDay, normalizeCategory } from '../lib/posts';
 
 const posts = await getPosts();
 const featured = posts.filter((p) => p.data.featured);
+// Drop a photo at public/assets/img/me.jpg and it appears automatically.
+const hasPhoto = fs.existsSync('public/assets/img/me.jpg');
+const latest = posts[0];
 const selected = (featured.length >= 3 ? featured : [...featured, ...posts.filter((p) => !p.data.featured)]).slice(0, 5);
 ---
 
-<BaseLayout title="Sahil Singh Rawat — Software Engineer & Security Researcher" description="I'm Sahil. I design resilient backends, hunt security bugs, and write about what I learn along the way.">
-  <SiteHeader />
+<BaseLayout title="Sahil Singh Rawat — Software Engineer" description="Hi, I'm Sahil. I build software and write about what I learn along the way.">
+  <SiteHeader active="home" />
 
   <main id="main">
-    <section class="wrap pt-16 sm:pt-24 pb-16 sm:pb-20">
-      <p class="eyebrow mb-5">Software engineer · Security researcher</p>
-      <h1 class="display mb-6">I build systems,<br />then try to <span class="hl">break them</span>.</h1>
+    <section class="wrap pt-14 sm:pt-20 pb-14 sm:pb-16">
+      <div class="flex items-center gap-4 mb-7">
+        {hasPhoto ? (
+          <img src="/assets/img/me.jpg" alt="Sahil Singh Rawat" width="88" height="88" class="w-[5.5rem] h-[5.5rem] rounded-full object-cover border border-[var(--border-hover)]" style="object-position: 50% 40%" />
+        ) : (
+          <div class="w-[5.5rem] h-[5.5rem] rounded-full flex items-center justify-center text-xl font-medium border border-[var(--border-hover)]" style="background: var(--accent-fill); color: #111110" aria-hidden="true">SR</div>
+        )}
+        <div>
+          <p class="font-medium text-[var(--text-high)] leading-tight">Sahil Singh Rawat</p>
+          <p class="eyebrow">Software engineer</p>
+        </div>
+      </div>
+      <h1 class="display mb-6">Hi, I'm Sahil.<br />I like <span class="hl">making things</span> and learning how they work.</h1>
       <p class="text-lg leading-relaxed text-[var(--text-body)] max-w-xl mb-8">
-        I'm Sahil. I design resilient backends, hunt security bugs, and write about what I learn along the way.
+        I'm a software engineer who enjoys building things, taking them apart, and figuring out why they work.
+        This is my corner of the internet, where I share what I'm learning.
       </p>
       <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
         <a href="/engineering/" class="btn btn-primary">Read the writing</a>
         <a href="/about/#contact" class="btn btn-ghost">Say hello →</a>
       </div>
+    </section>
+
+    <section class="wrap pb-16" aria-labelledby="me-h">
+      <h2 id="me-h" class="label mb-4">A bit about me</h2>
+      <div class="max-w-xl space-y-4 text-[1.05rem] leading-[1.75] text-[var(--text-body)]">
+        <p>I learn best by doing: building something, breaking it, and working out what went wrong. That curiosity is what got me into software in the first place, and it's still what keeps me interested.</p>
+        <p>These days I build backend systems, and I care most about the ones that keep working when things go wrong. I also enjoy hackathons and the occasional CTF, mostly for the puzzle of it.</p>
+        <p>Away from the keyboard, I love travelling and I'm a big fan of chess. Both are good at teaching me to slow down, look around, and think a few moves ahead.</p>
+        <p>This site is where I write down what I learn, so the next person stuck on the same problem gets a head start.</p>
+      </div>
+      {latest && (
+        <p class="mt-8 text-sm text-[var(--text-muted)]">
+          <span class="inline-block w-2 h-2 rounded-full mr-2 align-middle" style="background: var(--accent-fill); border: 1px solid var(--border-hover)"></span>
+          Latest from me: <a href={postUrl(latest)} class="text-[var(--text-high)] border-b border-[var(--border-hover)] hover:border-[var(--text-high)]">{latest.data.title}</a>
+        </p>
+      )}
     </section>
 
     <section class="wrap" aria-labelledby="selected-h">
@@ -43,12 +74,13 @@ const selected = (featured.length >= 3 ? featured : [...featured, ...posts.filte
       </div>
     </section>
 
-    <section class="wrap mt-20" aria-labelledby="focus-h">
-      <h2 id="focus-h" class="label mb-3">What I work on</h2>
-      <div class="rows">
-        <div class="row"><div><div class="row-title !text-base">Distributed systems and backends</div><div class="row-meta">Service design, concurrency, fault tolerance</div></div></div>
-        <div class="row"><div><div class="row-title !text-base">Application security</div><div class="row-meta">Bug bounty, web vulnerabilities, malware analysis</div></div></div>
-        <div class="row"><div><div class="row-title !text-base">Runtimes and internals</div><div class="row-meta">JVM, Linux, low-level C, AI and LLM security</div></div></div>
+    <section class="wrap mt-20" aria-labelledby="find-h">
+      <h2 id="find-h" class="label mb-3">Find me</h2>
+      <div class="flex flex-wrap gap-2">
+        <a href="mailto:contact@sahilsinghrawat.com" class="chip">Email</a>
+        <a href="https://github.com/sahil-rawat" target="_blank" rel="noreferrer" class="chip">GitHub ↗</a>
+        <a href="https://www.linkedin.com/in/sahil-singh-rawat" target="_blank" rel="noreferrer" class="chip">LinkedIn ↗</a>
+        <a href="https://twitter.com/sahil_s_rawat" target="_blank" rel="noreferrer" class="chip">Twitter / X ↗</a>
       </div>
     </section>
   </main>

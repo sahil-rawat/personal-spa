@@ -365,6 +365,7 @@ dialog.palette::backdrop { background: rgba(0, 0, 0, 0.55); backdrop-filter: blu
 .is-read .read-mark { display: inline; }
 
 
+@layer components {
 /* =====================================================================
    Minimal theme: shared components
    ===================================================================== */
@@ -426,3 +427,4 @@ html:not(.light) .dot-mark { color: #111110; }
 
 .tag-link { font-size: 0.8rem; color: var(--text-muted); transition: color 0.15s; }
 .tag-link:hover { color: var(--text-high); text-decoration: underline; text-underline-offset: 3px; }
+}
