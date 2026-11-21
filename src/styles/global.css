@@ -478,3 +478,14 @@ dialog.chess-egg::backdrop { background: rgba(0, 0, 0, 0.5); backdrop-filter: bl
 .lost-shadow { animation: pin-shadow 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
 @keyframes pin-bob { 0%, 100% { transform: translate(268px, 40px); } 50% { transform: translate(268px, 33px); } }
 @keyframes pin-shadow { 0%, 100% { transform: scale(1); opacity: 0.18; } 50% { transform: scale(0.75); opacity: 0.1; } }
+
+/* ---------- Article tables ---------- */
+.article-content table {
+  display: block; overflow-x: auto; width: 100%;
+  border-collapse: collapse; font-size: 0.92em; margin: 2rem 0;
+}
+.article-content th, .article-content td {
+  text-align: left; padding: 0.6rem 0.9rem; border-bottom: 1px solid var(--border); vertical-align: top;
+}
+.article-content th { color: var(--text-high); font-weight: 600; border-bottom-color: var(--border-hover); white-space: nowrap; }
+.article-content tbody tr:hover { background: var(--bg-surface); }
